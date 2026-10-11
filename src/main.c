@@ -17,7 +17,7 @@
 #define SAMPLE_RATE 44100
 #define BUFFER_SIZE 4096
 
-bool main_cycle(IO *io, Regs *regs, GuiVars *gui_vars);
+bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
 void close_services(AudioStream stream, 
     Image screen_image,
     Texture screen_texture);
@@ -40,11 +40,9 @@ int main(int argc, char *argv[])
 
     Regs regs = init_regs();
     IO io = init_io();
-    GuiVars gui_vars = init_gui_vars();
+    init_gui();
     AudioStream stream = init_audio();
-    gui_vars.audio_data = init_audio_vars(stream);
-    gui_vars.quirks = init_quirks();
-    alloc_debugger_inst_array(&gui_vars.inst_list);
+    Audio_data audio_data = init_audio_vars(stream);
 
     load_font(regs.ram);
     const int frame_time = 17; // amount of time between frames in miliseconds
@@ -56,13 +54,10 @@ int main(int argc, char *argv[])
             if ((dropped_rom.count > 0) &&
                  IsFileExtension(dropped_rom.paths[0], ".ch8")) {
                 load_rom(regs.ram, dropped_rom.paths[0]);
-                #ifdef DEBUG_ON
-                load_debugger_inst_array(regs.ram, gui_vars.inst_list);
-                #endif
                 break;
             }
         }
-        draw(&io, &regs, &gui_vars);
+        draw(&io, &regs);
         usleep(frame_time * 1000);
 
         if (WindowShouldClose()) {
@@ -85,22 +80,22 @@ int main(int argc, char *argv[])
                 UnloadDroppedFiles(dropped_rom);
 
                 #ifdef DEBUG_ON
-                load_debugger_inst_array(regs.ram, gui_vars.inst_list);
+                load_debugger_inst_array(regs.ram);
                 #endif
             }
         }
 
-        if (!main_cycle(&io, &regs, &gui_vars)) break;
+        if (!main_cycle(&io, &regs, &audio_data)) break;
 
-        draw(&io, &regs, &gui_vars);
+        draw(&io, &regs);
+        // update audio and quirks config
+        audio_data.frequency = (int) gui_get_freq();
+        audio_data.volume = gui_get_volume();
 
         usleep(frame_time * 1000);
     }
 
-    #ifdef DEBUG_ON
-    free_debugger_inst_array(gui_vars.inst_list);
-    #endif
-
+    unload_gui();
     close_services(stream, io.screen_image, io.screen_texture);
 
     return 0;
@@ -118,13 +113,13 @@ void close_services(
     CloseWindow();
 }
 
-bool main_cycle(IO *io, Regs *regs, GuiVars *gui_vars)
+bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data)
 {
-    if (IsAudioStreamProcessed(gui_vars->audio_data.stream)) {
-        sample_audio_buffer(&gui_vars->audio_data);
+    if (IsAudioStreamProcessed(audio_data->stream)) {
+        sample_audio_buffer(audio_data);
         UpdateAudioStream(
-            gui_vars->audio_data.stream,
-            gui_vars->audio_data.buffer,
+            audio_data->stream,
+            audio_data->buffer,
             BUFFER_SIZE);
     }
 
@@ -132,31 +127,37 @@ bool main_cycle(IO *io, Regs *regs, GuiVars *gui_vars)
     if (regs->sound > 0) regs->sound -= 1;
 
     // audio
-    if (regs->sound == 0) PauseAudioStream(gui_vars->audio_data.stream);
-    if (regs->sound) ResumeAudioStream(gui_vars->audio_data.stream);
+    if (regs->sound == 0) PauseAudioStream(audio_data->stream);
+    if (regs->sound) ResumeAudioStream(audio_data->stream);
 
     handle_input(io->keys_down, &io->last_key_pressed);
 
-    const int IPF = gui_vars->IPF;        // instructions per frame
+    Quirks quirks = gui_get_quirks();
+    const int IPF = gui_get_ipf();        // instructions per frame
     for (int i = 0; i < IPF; i++) {
-        if (io->display_wait && gui_vars->quirks.is_display_wait) break; 
+        if (io->display_wait && quirks.is_display_wait) break; 
 
-        while (gui_vars->is_paused) {
+        while (gui_is_paused()) {
             // step 1 instruction
-            if (gui_vars->is_step) {
-                gui_vars->is_step = false;
+            if (gui_is_step()) {
+                gui_set_step(false);
                 break;
             }
             if (WindowShouldClose()) return false;
-            draw(io, regs, gui_vars);
+
+            draw(io, regs);
+            // update audio and quirks config
+            quirks = gui_get_quirks();
+            audio_data->frequency = (int) gui_get_freq();
+            audio_data->volume = gui_get_volume();
         }
 
-        FDE(regs, io, gui_vars->quirks);
+        FDE(regs, io, quirks);
         // pause on breakpoint
-        if (list_contains(&gui_vars->bp_list, regs->pc)) {
-            gui_vars->is_paused = true;
+        if (gui_bp_contains(regs->pc)) {
+            gui_set_pause(true);
         }
-        update_scroll(regs, gui_vars);
+        update_scroll(regs->pc);
     }
     return true;
 }
