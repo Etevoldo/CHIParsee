@@ -12,7 +12,6 @@
 #define RECT(x, y, xwidth, y_width) ((Rectangle) { x, y, xwidth, y_width })
 #define INST_DEBUG_STRING_SIZE 11 // "XXXX = XXXX"
 
-static const int inst_to_display;
 static int inst_active;
 static int inst_focus;
 static int inst_scrollIndex;
@@ -224,7 +223,7 @@ void draw_debug(Regs *regs, bool keys_down[])
     if (GuiButton(pause_icon, GuiIconText(icon, ""))) {
         is_paused = !is_paused;
     }
-    Rectangle step_icon = RECT( debug_x + 35, debug_buttons_y, 30, 30);
+    Rectangle step_icon = RECT(debug_x + 35, debug_buttons_y, 30, 30);
     if (GuiButton(step_icon, GuiIconText(ICON_STEP_OVER, ""))) {
         is_step = true;
     }
