@@ -96,7 +96,7 @@ void draw_gui(Regs *regs)
     GuiSlider(
         RECT(gui_x + 20, gui_y + 40, 200, 20),
         "Freq",
-        TextFormat("%dHz", audio_freq_slider),
+        TextFormat("%dHz", (int) audio_freq_slider),
         &audio_freq_slider,
         50.0f,
         2000.0f);
