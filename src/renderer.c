@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "renderer.h"
+#include "instructions.h"
 #include "raylib.h"
 #include "types.h"
 #include "raygui.h"
@@ -11,7 +12,22 @@
 #define RECT(x, y, xwidth, y_width) ((Rectangle) { x, y, xwidth, y_width })
 #define INST_DEBUG_STRING_SIZE 11 // "XXXX = XXXX"
 
-void draw(IO *io, Regs *regs, GuiVars *gui_vars)
+static const int inst_to_display;
+static int inst_active;
+static int inst_focus;
+static int inst_scrollIndex;
+static char **inst_list;
+static bool is_paused;
+static bool is_step;
+static float IPF;
+static char bp_text[64];
+static bool bp_is_edit_on;
+static float audio_freq_slider;
+static float audio_volume;
+static Quirks quirks;
+static List bp_list;
+
+void draw(IO *io, Regs *regs)
 {
     io->display_wait = false;
     io->last_key_pressed = NO_KEY;
@@ -38,32 +54,31 @@ void draw(IO *io, Regs *regs, GuiVars *gui_vars)
             WHITE);
 
         #ifdef DEBUG_ON
-        draw_debug(regs, gui_vars, io->keys_down);
+        draw_debug(regs, io->keys_down);
         #endif
 
-        draw_gui(regs, gui_vars);
+        draw_gui(regs);
     EndDrawing();
 }
 
-GuiVars init_gui_vars()
+void init_gui()
 {
-    GuiVars gui_vars = (GuiVars) {
-        .inst_to_display = RAM_SIZE / 2,
-        .inst_active = RAM_SIZE / 4,
-        .inst_focus = -1,
-        .inst_scrollIndex = RAM_SIZE / 4 - 10,
-        .inst_list = NULL,
-        .is_paused = false,
-        .is_step = false,
-        .IPF = 15,
-        .bp_is_edit_on = false
-    };
-    gui_vars.bp_list = list_create(64);
-
-    return gui_vars;
+    inst_active = RAM_SIZE / 4;
+    inst_focus = -1;
+    inst_scrollIndex = RAM_SIZE / 4 - 10;
+    inst_list = NULL;
+    is_paused = false;
+    is_step = false;
+    IPF = 15.0f;
+    bp_is_edit_on = false;
+    audio_freq_slider = 440.0f;
+    audio_volume = 7.0f;
+    bp_list = list_create(64);
+    inst_list = alloc_debugger_inst_array();
+    quirks = init_quirks();
 }
 
-void draw_gui(Regs *regs, GuiVars *gui_vars)
+void draw_gui(Regs *regs)
 {
     const int gui_y = DISPLAY_HEIGHT * SCALE + BORDER_WIDTH;
     const int gui_x = BORDER_WIDTH;
@@ -72,25 +87,22 @@ void draw_gui(Regs *regs, GuiVars *gui_vars)
     GuiSlider(
         RECT(gui_x + 20, gui_y, 200, 20),
         "Vol",
-        TextFormat("%2.f%%", gui_vars->audio_data.volume * 100),
-        &(gui_vars->audio_data.volume),
+        TextFormat("%2.f%%", audio_volume * 100),
+        &audio_volume,
         0.0f,
         1.0f);
 
     // volume Frequency slider
     // converting to frequency cause raygui sliders must be float
-    float freq_slider = (float) gui_vars->audio_data.frequency;
     GuiSlider(
         RECT(gui_x + 20, gui_y + 40, 200, 20),
         "Freq",
-        TextFormat("%dHz", gui_vars->audio_data.frequency),
-        &freq_slider,
+        TextFormat("%dHz", audio_freq_slider),
+        &audio_freq_slider,
         50.0f,
         2000.0f);
-    gui_vars->audio_data.frequency = freq_slider;
 
     // IPF
-    float IPF = (float) gui_vars->IPF;
     GuiSlider(
         RECT(gui_x + 20, gui_y + 80, 200, 20),
         "IPF",
@@ -98,44 +110,45 @@ void draw_gui(Regs *regs, GuiVars *gui_vars)
         &IPF,
         1.0f,
         25.0f);
-    gui_vars->IPF = (int) IPF;
 
     const int second_row_x = gui_x + 270;
     // Quirks
     GuiCheckBox(
         RECT(second_row_x, gui_y, 20, 20),
         "display wait",
-        &(gui_vars->quirks.is_display_wait));
+        &(quirks.is_display_wait));
     GuiCheckBox(
         RECT(second_row_x, gui_y + 40, 20, 20),
         "8xy6 & 8xye: Vy into Vx before shift",
-        &(gui_vars->quirks.is_8xy6e_vy_into_vx));
+        &quirks.is_8xy6e_vy_into_vx);
     GuiCheckBox(
         RECT(second_row_x, gui_y + 80, 20, 20),
         "bxnn instead of bnnn",
-        &(gui_vars->quirks.is_bnnn_vx));
+        &quirks.is_bnnn_vx);
     GuiCheckBox(
         RECT(second_row_x, gui_y + 120, 20, 20),
         "fx55 & fx65: update I",
-        &(gui_vars->quirks.is_fx565_change_I));
+        &quirks.is_fx565_change_I);
 }
 
-void alloc_debugger_inst_array(char ***inst_list)
+char ** alloc_debugger_inst_array()
 {
-    *inst_list = (char **) malloc(INST_TO_DISPLAY * sizeof(char **));
-    if (*inst_list == NULL) {
+    char **inst_list;
+    inst_list = (char **) malloc(INST_TO_DISPLAY * sizeof(char **));
+    if (inst_list == NULL) {
         exit(EXIT_FAILURE);
     }
 
     for (int i = 0; i < INST_TO_DISPLAY; i++) {
-        (*inst_list)[i] = (char *) malloc(INST_DEBUG_STRING_SIZE + 1);
-        if ((*inst_list)[i] == NULL) {
+        (inst_list)[i] = (char *) malloc(INST_DEBUG_STRING_SIZE + 1);
+        if (inst_list[i] == NULL) {
             exit(EXIT_FAILURE);
         }
     }
+    return inst_list;
 }
 
-void load_debugger_inst_array(u8 *ram, char **inst_list)
+void load_debugger_inst_array(u8 *ram)
 {
     for (int j = 0, i = 0; i < INST_TO_DISPLAY; j += 2, i++) {
         sprintf(
@@ -146,7 +159,7 @@ void load_debugger_inst_array(u8 *ram, char **inst_list)
 }
 
 // free debug instructions string list
-void free_debugger_inst_array(char **inst_list)
+void free_debugger_inst_array()
 {
     for (int i = 0; i < INST_TO_DISPLAY; i++) {
         free(inst_list[i]);
@@ -154,11 +167,9 @@ void free_debugger_inst_array(char **inst_list)
     free(inst_list);
 }
 
-void draw_debug(Regs *regs, GuiVars *gui_vars, bool keys_down[])
+void draw_debug(Regs *regs, bool keys_down[])
 {
-
     const char *text;
-
     const int debug_x = DISPLAY_WIDTH * SCALE + 10;
     const int debug_y = 10;
     const int label_width = 60;
@@ -190,8 +201,8 @@ void draw_debug(Regs *regs, GuiVars *gui_vars, bool keys_down[])
             text);
     }
     // Instructions
-    if (!gui_vars-> is_paused) {
-        update_scroll(regs, gui_vars);
+    if (!is_paused) {
+        update_scroll(regs->pc);
     }
     GuiGroupBox(
         RECT(debug_x + 138, debug_y, 200, 620),
@@ -199,23 +210,23 @@ void draw_debug(Regs *regs, GuiVars *gui_vars, bool keys_down[])
 
     GuiListViewEx(
         RECT(debug_x + 148, debug_y + 10, 180, 600),
-        gui_vars->inst_list,
-        gui_vars->inst_to_display,
-        &(gui_vars->inst_scrollIndex),
-        &(gui_vars->inst_active),
-        &(gui_vars->inst_focus)
+        inst_list,
+        INST_TO_DISPLAY,
+        &inst_scrollIndex,
+        &inst_active,
+        &inst_focus
     );
 
     // Pause/unpause and step
     const int debug_buttons_y = debug_y + 285;
-    GuiIconName icon = gui_vars->is_paused ? ICON_PLAYER_PLAY : ICON_PLAYER_PAUSE;
+    GuiIconName icon = is_paused ? ICON_PLAYER_PLAY : ICON_PLAYER_PAUSE;
     Rectangle pause_icon = RECT(debug_x, debug_buttons_y, 30, 30);
     if (GuiButton(pause_icon, GuiIconText(icon, ""))) {
-        gui_vars->is_paused = !gui_vars->is_paused;
+        is_paused = !is_paused;
     }
     Rectangle step_icon = RECT( debug_x + 35, debug_buttons_y, 30, 30);
     if (GuiButton(step_icon, GuiIconText(ICON_STEP_OVER, ""))) {
-        gui_vars->is_step = true;
+        is_step = true;
     }
 
     // stack
@@ -258,21 +269,21 @@ void draw_debug(Regs *regs, GuiVars *gui_vars, bool keys_down[])
     // Breakpoints
     const int bp_x = debug_x + 138 + 200 + padding;
     if (GuiTextBox(
-            RECT(bp_x, padding, 100, 30), gui_vars->bp_text,
-            20, gui_vars->bp_is_edit_on)) {
-            gui_vars->bp_is_edit_on = !gui_vars->bp_is_edit_on;
+            RECT(bp_x, padding, 100, 30), bp_text,
+            20, bp_is_edit_on)) {
+            bp_is_edit_on = !bp_is_edit_on;
        }
 
     GuiIconName bp_icon = ICON_CIRCLE_ADD_FILL;
     Rectangle bp_rec = RECT(bp_x + 110, padding, 30, 30);
     if (GuiButton(bp_rec, GuiIconText(bp_icon, ""))) {
         char *end;
-        const int address = strtol(gui_vars->bp_text, &end, 16);
+        const int address = strtol(bp_text, &end, 16);
         if (address) {
-            list_push(&gui_vars->bp_list, address);
+            list_push(&bp_list, address);
         }
         // debug
-        list_print(&gui_vars->bp_list);
+        list_print(&bp_list);
     }
 
     GuiLabel(
@@ -280,25 +291,25 @@ void draw_debug(Regs *regs, GuiVars *gui_vars, bool keys_down[])
         "Breakpoints:"
     );
 
-    int bp_length = gui_vars->bp_list.length;
+    int bp_length = bp_list.length;
     for (int i = 0; i < bp_length; i++) {
         GuiLabel(
             RECT(bp_x, 50 + padding + 30 * i, 50, 30),
-            TextFormat("%.4X", gui_vars->bp_list.arr[i])
+            TextFormat("%.4X", bp_list.arr[i])
         );
         if (GuiButton(
             RECT(bp_x + 55, 50 + padding + 30 * i, 30, 30),
             GuiIconText(ICON_CROSS, ""))) {
-            list_remove(&gui_vars->bp_list, i);
+            list_remove(&bp_list, i);
         }
     }
 }
 
 // update global variables of for the instructions scroll list
-void update_scroll(Regs *regs, GuiVars *gui_vars)
+void update_scroll(u16 pc)
 {
-    gui_vars->inst_scrollIndex = regs->pc / 2 - 10;
-    gui_vars->inst_active = regs->pc / 2;
+    inst_scrollIndex = pc / 2 - 10;
+    inst_active = pc / 2;
 }
 
 void clear_display(bool display[])
