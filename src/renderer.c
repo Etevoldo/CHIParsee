@@ -338,3 +338,56 @@ bool drawPixel(int x, int y, bool isBitOn, bool display[])
 
     return collision;
 }
+
+bool gui_bp_contains(u16 address)
+{
+    return list_contains(&bp_list, address);
+}
+
+int gui_get_ipf()
+{
+    return IPF;
+}
+
+bool gui_is_paused()
+{
+    return is_paused;
+}
+
+void gui_set_pause(bool value)
+{
+    is_paused = value;
+}
+
+bool gui_is_step()
+{
+    return is_step;
+}
+
+void gui_set_step(bool value)
+{
+    is_step = value;
+}
+
+float gui_get_volume()
+{
+    return audio_volume;
+}
+
+float gui_get_freq()
+{
+    return audio_freq_slider;
+}
+
+Quirks gui_get_quirks()
+{
+    return quirks;
+}
+
+void unload_gui()
+{
+    #ifdef DEBUG_ON
+    free_debugger_inst_array();
+    #endif
+    list_dealloc(&bp_list);
+}
