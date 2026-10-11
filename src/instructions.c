@@ -2,8 +2,8 @@
 #include <stdlib.h>
 
 #include "instructions.h"
+#include "io.h"
 #include "stack.h"
-#include "renderer.h"
 
 // init default values for quirks
 Quirks init_quirks()
