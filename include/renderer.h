@@ -20,3 +20,15 @@ void load_debugger_inst_array(u8 *ram);
 void free_debugger_inst_array();
 
 void update_scroll(u16 pc);
+
+bool gui_bp_contains(u16 address);
+int gui_get_ipf();
+bool gui_is_paused();
+void gui_set_pause(bool value);
+bool gui_is_step();
+void gui_set_step(bool value);
+float gui_get_volume();
+float gui_get_freq();
+Quirks gui_get_quirks();
+
+void unload_gui();
