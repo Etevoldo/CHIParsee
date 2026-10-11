@@ -32,8 +32,9 @@ int main(int argc, char *argv[])
         DISPLAY_HEIGHT * SCALE + 200,
         "Chip-8 Emu");
     #else
-    InitWindow(DISPLAY_WIDTH * SCALE,
-        DISPLAY_HEIGHT * SCALE,
+    InitWindow(
+        DISPLAY_WIDTH * SCALE,
+        DISPLAY_HEIGHT * SCALE + 200,
         "Chip-8 Emu");
     #endif
     GuiLoadStyleAmber();
