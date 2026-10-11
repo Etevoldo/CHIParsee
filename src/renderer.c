@@ -5,7 +5,6 @@
 #include "raylib.h"
 #include "types.h"
 #include "raygui.h"
-#include "stack.h"
 
 #define ON_COLOR CLITERAL(Color){ 155, 188, 15, 255 }
 #define OFF_COLOR CLITERAL(Color){ 15, 56, 15, 255 }
@@ -309,34 +308,6 @@ void update_scroll(u16 pc)
 {
     inst_scrollIndex = pc / 2 - 10;
     inst_active = pc / 2;
-}
-
-void clear_display(bool display[])
-{
-    for (int y = 0; y < DISPLAY_HEIGHT; y++) {
-        for (int x = 0; x < DISPLAY_WIDTH; x++) {
-            int index = x + y * DISPLAY_WIDTH;
-            display[index] = false;
-        }
-    }
-}
-
-bool drawPixel(int x, int y, bool isBitOn, bool display[])
-{
-    int index = x + y * DISPLAY_WIDTH;
-    bool collision = false;
-
-    if (isBitOn) {
-        if (display[index]) {
-            display[index] = false;
-            collision = true;
-        }
-        else if (!display[index]) {
-            display[index] = true;
-        }
-    }
-
-    return collision;
 }
 
 bool gui_bp_contains(u16 address)
