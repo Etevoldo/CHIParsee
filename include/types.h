@@ -57,19 +57,3 @@ typedef struct {
     float volume;
     int frequency;
 } Audio_data;
-
-typedef struct {
-    const int inst_to_display;
-    int inst_active;
-    int inst_focus;
-    int inst_scrollIndex;
-    char **inst_list;
-    bool is_paused;
-    bool is_step;
-    int IPF;
-    Audio_data audio_data;
-    Quirks quirks;
-    char bp_text[64];
-    bool bp_is_edit_on;
-    List bp_list;
-} GuiVars;
