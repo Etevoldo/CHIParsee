@@ -1,6 +1,7 @@
 #pragma once
 #include "types.h"
 
+Regs init_regs();
 void FDE(Regs *regs, IO *io, Quirks quirks);
 void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[]);
 

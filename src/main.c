@@ -21,8 +21,6 @@ bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
 void close_services(AudioStream stream, 
     Image screen_image,
     Texture screen_texture);
-IO init_io();
-Regs init_regs();
 
 int main(int argc, char *argv[])
 {
@@ -161,30 +159,4 @@ bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data)
         update_scroll(regs->pc);
     }
     return true;
-}
-
-IO init_io()
-{
-    IO io = (IO) {
-        .display = { false },
-        .keys_down = { false },
-        .last_key_pressed = NO_KEY,
-        .display_wait = false,
-        .screen_image = GenImageColor(DISPLAY_WIDTH, DISPLAY_HEIGHT, GREEN),
-        .screen_texture = LoadTextureFromImage(io.screen_image)
-    };
-    return io;
-}
-
-Regs init_regs()
-{
-    return (Regs) {
-        .v = { 0 },
-        .index = 0,
-        .delay = 0,
-        .sound = 0,
-        .ram = { 0 },
-        .stack = (Stack) {0, { 0 }},
-        .pc = PC_START,
-    };
 }

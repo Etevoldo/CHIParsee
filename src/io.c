@@ -5,6 +5,19 @@
 
 static int map_key(int key);
 
+IO init_io()
+{
+    IO io = (IO) {
+        .display = { false },
+        .keys_down = { false },
+        .last_key_pressed = NO_KEY,
+        .display_wait = false,
+        .screen_image = GenImageColor(DISPLAY_WIDTH, DISPLAY_HEIGHT, GREEN),
+        .screen_texture = LoadTextureFromImage(io.screen_image),
+    };
+    return io;
+}
+
 void handle_input(bool *keys_down, int *last_key_pressed)
 {
     static int key_codes[N_OF_KEYS] = {

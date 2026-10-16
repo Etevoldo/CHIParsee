@@ -16,6 +16,21 @@ Quirks init_quirks()
     };
 }
 
+Regs init_regs()
+{
+    Regs regs = (Regs) {
+        .v = { 0 },
+        .index = 0,
+        .delay = 0,
+        .sound = 0,
+        .ram = { 0 },
+        .stack = (Stack) {0, { 0 }},
+        .pc = PC_START,
+    };
+    load_font(regs.ram);
+    return regs;
+}
+
 void FDE(Regs *regs, IO *io, Quirks quirks)
 {
     // for short
