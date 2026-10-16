@@ -51,7 +51,7 @@ void draw(IO *io, Regs *regs)
             (float) SCALE,
             WHITE);
 
-        #ifdef DEBUG_ON
+        #ifdef DEBUG
         draw_debug(regs, io->keys_down);
         #endif
 
@@ -357,7 +357,7 @@ Quirks gui_get_quirks()
 
 void unload_gui()
 {
-    #ifdef DEBUG_ON
+    #ifdef DEBUG
     free_debugger_inst_array();
     #endif
     list_dealloc(&bp_list);

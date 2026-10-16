@@ -7,7 +7,7 @@ INCLUDE_PATH := "include"
 LIBRARY_PATH := "lib"
 BUILD_DIR := ./build
 SRC_DIR := ./src
-DEBUG := -g -DDEBUG_ON
+DEBUG := -g -DDEBUG
 FLAGS := -Wall -O0
 
 # find all *.c in src_dir

@@ -26,7 +26,7 @@ Regs init_regs();
 
 int main(int argc, char *argv[])
 {
-    #ifdef DEBUG_ON
+    #ifdef DEBUG
     InitWindow(
         DISPLAY_WIDTH * SCALE + 510,
         DISPLAY_HEIGHT * SCALE + 200,
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
                 UnloadDroppedFiles(dropped_rom);
 
-                #ifdef DEBUG_ON
+                #ifdef DEBUG
                 load_debugger_inst_array(regs.ram);
                 #endif
             }
