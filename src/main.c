@@ -54,7 +54,6 @@ int main(int argc, char *argv[])
             FilePathList dropped_rom = LoadDroppedFiles();
             if ((dropped_rom.count > 0) &&
                  IsFileExtension(dropped_rom.paths[0], ".ch8")) {
-                load_rom(regs.ram, dropped_rom.paths[0]);
                 break;
             }
         }
@@ -77,6 +76,7 @@ int main(int argc, char *argv[])
                 regs = init_regs();
                 io = init_io();
                 load_rom(regs.ram, dropped_rom.paths[0]);
+                load_font(regs.ram);
 
                 UnloadDroppedFiles(dropped_rom);
 
