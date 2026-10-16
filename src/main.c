@@ -18,7 +18,7 @@
 #define BUFFER_SIZE 4096
 
 bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
-void close_services(AudioStream stream, 
+void close_services(AudioStream stream,
     Image screen_image,
     Texture screen_texture);
 
