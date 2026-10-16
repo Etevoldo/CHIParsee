@@ -11,7 +11,7 @@ Quirks init_quirks()
     return (Quirks) {
         .is_display_wait = true,
         .is_8xy6e_vy_into_vx = true,
-        .is_bnnn_vx = false,
+        .is_bxnn = false,
         .is_fx565_change_I = false
     };
 }
@@ -83,7 +83,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         regs->index = nnn;
         break;
     case 0xB000:
-        if (quirks.is_bnnn_vx) { regs->pc = regs->v[n] + kk; }
+        if (quirks.is_bxnn) { regs->pc = regs->v[n] + kk; }
         else regs->pc = regs->v[0x0] + nnn;
         break;
     case 0xC000:

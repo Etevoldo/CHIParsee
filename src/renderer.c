@@ -122,7 +122,7 @@ void draw_gui(Regs *regs)
     GuiCheckBox(
         RECT(second_row_x, gui_y + 80, 20, 20),
         "bxnn instead of bnnn",
-        &quirks.is_bnnn_vx);
+        &quirks.is_bxnn);
     GuiCheckBox(
         RECT(second_row_x, gui_y + 120, 20, 20),
         "fx55 & fx65: update I",
