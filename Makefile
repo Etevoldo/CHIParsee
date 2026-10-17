@@ -11,7 +11,7 @@ DEBUG := -g -DDEBUG
 FLAGS := -Wall -O0
 
 # find all *.c in src_dir
-SRCS_PATH = ${shell find ${SRC_DIR} -name '*.c'}
+SRCS_PATH = ${shell find ${SRC_DIR} -name "*.c"}
 # prefix object files with the build directory
 # for their build location
 OBJS_PATH = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS_PATH})
