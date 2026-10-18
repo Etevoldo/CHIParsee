@@ -28,4 +28,6 @@ Future Goals:
     - [x] All Registers
     - [x] Instructions scroller
 - [ ] SUPER-CHIP
+- [ ] XO-CHIP
+- [ ] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
 - [ ] Other Keyboard-layout Configs
