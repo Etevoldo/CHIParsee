@@ -55,7 +55,7 @@ void draw(IO *io, Regs *regs)
         draw_debug(regs, io->keys_down);
         #endif
 
-        draw_gui(regs);
+        draw_gui();
     EndDrawing();
 }
 
@@ -76,7 +76,7 @@ void init_gui()
     quirks = init_quirks();
 }
 
-void draw_gui(Regs *regs)
+void draw_gui()
 {
     const int gui_y = DISPLAY_HEIGHT * SCALE + BORDER_WIDTH;
     const int gui_x = BORDER_WIDTH;

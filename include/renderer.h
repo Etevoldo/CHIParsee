@@ -8,7 +8,7 @@ void init_gui();
 // Draw regular screen gui
 void draw(IO *io, Regs *regs); 
 // Draw debug gui
-void draw_gui(Regs *regs);
+void draw_gui();
 // Draw debug gui
 void draw_debug(Regs *regs, bool keys_down[]);
 
