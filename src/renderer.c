@@ -6,15 +6,8 @@
 #include "raylib.h"
 #include "types.h"
 
-// has to be included otherwise 
 #include "raygui.h"
 #include "gui_window_file_dialog.h"
-
-#ifdef _WIN32
-#define PATH_SEPARATOR "\\"
-#else
-#define PATH_SEPARATOR "/"
-#endif
 
 #define ON_COLOR CLITERAL(Color){ 243, 147, 51, 255 }
 #define OFF_COLOR CLITERAL(Color){ 51, 51, 51, 255 }
@@ -44,6 +37,7 @@ static List bp_list;
 
 //file dialog
 static char file_name_to_read[512];
+static bool is_file_selected;
 static GuiWindowFileDialogState file_dialog_state;
 
 void draw(IO *io, Regs *regs)
@@ -74,6 +68,8 @@ void draw(IO *io, Regs *regs)
             strcpy(file_name_to_read, filepath);
             printf("File to read:\n%s\n", file_name_to_read);
         }
+        // TODO consider just using the .Select FilePressed
+        is_file_selected = true;
         file_dialog_state.SelectFilePressed = false;
     }
 
@@ -114,12 +110,13 @@ void init_gui()
     inst_list = alloc_debugger_inst_array();
     quirks = init_quirks();
     file_dialog_state = InitGuiWindowFileDialog(GetWorkingDirectory());
+    is_file_selected = false;
 }
 
 void draw_gui(const int gui_x, const int gui_y)
 {
     if (file_dialog_state.windowActive) GuiLock();
-    if (GuiButton(RECT(20, 20, 140, 30),
+    if (GuiButton(RECT(0, 0, 140, 30),
         GuiIconText(ICON_FILE_OPEN, "Open rom"))) {
             file_dialog_state.windowActive = true;
     }
@@ -403,6 +400,16 @@ Quirks gui_get_quirks()
 char * gui_get_file_name()
 {
     return file_name_to_read;
+}
+
+bool gui_is_file_dropped()
+{
+    return is_file_selected;
+}
+
+void gui_set_file_dropped(bool value)
+{
+    is_file_selected = value;
 }
 
 void unload_gui()
