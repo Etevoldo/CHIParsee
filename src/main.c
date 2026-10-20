@@ -54,13 +54,10 @@ int main(int argc, char *argv[])
 
     // Insert ROM gui pre-loop
     while (true) {
-        if (IsFileDropped()) {
-            FilePathList dropped_rom = LoadDroppedFiles();
-            if ((dropped_rom.count > 0) &&
-                 IsFileExtension(dropped_rom.paths[0], ".ch8")) {
-                break;
-            }
+        if (gui_is_file_dropped()) {
+            break;
         }
+
         draw(&io, &regs);
         usleep(frame_time * 1000);
 
@@ -71,23 +68,19 @@ int main(int argc, char *argv[])
     }
 
     while (!WindowShouldClose()) {
-        if (IsFileDropped()) {
-            FilePathList dropped_rom = LoadDroppedFiles();
-            if ((dropped_rom.count > 0) &&
-                 IsFileExtension(dropped_rom.paths[0], ".ch8")) {
-                UnloadTexture(io.screen_texture);
-                UnloadImage(io.screen_image);
-                regs = init_regs();
-                io = init_io();
-                load_rom(regs.ram, dropped_rom.paths[0]);
-                load_font(regs.ram);
+        if (gui_is_file_dropped()) {
+            UnloadTexture(io.screen_texture);
+            UnloadImage(io.screen_image);
+            regs = init_regs();
+            io = init_io();
+            load_rom(regs.ram, gui_get_file_name());
+            load_font(regs.ram);
 
-                UnloadDroppedFiles(dropped_rom);
+            gui_set_file_dropped(false);
 
-                #ifdef DEBUG
-                load_debugger_inst_array(regs.ram);
-                #endif
-            }
+            #ifdef DEBUG
+            load_debugger_inst_array(regs.ram);
+            #endif
         }
 
         if (!main_cycle(&io, &regs, &audio_data)) break;
