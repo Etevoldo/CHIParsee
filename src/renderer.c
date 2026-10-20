@@ -8,8 +8,15 @@
 
 #define ON_COLOR CLITERAL(Color){ 243, 147, 51, 255 }
 #define OFF_COLOR CLITERAL(Color){ 51, 51, 51, 255 }
-#define RECT(x, y, xwidth, y_width) ((Rectangle) { x, y, xwidth, y_width })
+#define RECT(x, y, xwidth, y_width) ((Rectangle) { (x), (y), (xwidth), (y_width) })
 #define INST_DEBUG_STRING_SIZE 11 // "XXXX = XXXX"
+
+#define COLUMN_WIDTH 270
+#define UPPER_MENU_PADDING 30
+#define PADDING 17
+#define SLIDER_WIDTH 200
+#define SLIDER_HEIGHT 20
+#define BOX_LEN 20
 
 static int inst_active;
 static int inst_focus;
@@ -46,7 +53,7 @@ void draw(IO *io, Regs *regs)
 
         DrawTextureEx(
             io->screen_texture,
-            (Vector2) { 0, 0 },
+            (Vector2) { 0, UPPER_MENU_PADDING },
             0.0f,
             (float) SCALE,
             WHITE);
@@ -55,7 +62,9 @@ void draw(IO *io, Regs *regs)
         draw_debug(regs, io->keys_down);
         #endif
 
-        draw_gui();
+        draw_gui(
+            PADDING,
+            DISPLAY_HEIGHT * SCALE + UPPER_MENU_PADDING + PADDING);
     EndDrawing();
 }
 
@@ -76,14 +85,11 @@ void init_gui()
     quirks = init_quirks();
 }
 
-void draw_gui()
+void draw_gui(const int gui_x, const int gui_y)
 {
-    const int gui_y = DISPLAY_HEIGHT * SCALE + BORDER_WIDTH;
-    const int gui_x = BORDER_WIDTH;
-
     // volume slider
     GuiSlider(
-        RECT(gui_x + 20, gui_y, 200, 20),
+        RECT(gui_x + PADDING, gui_y, SLIDER_WIDTH, SLIDER_HEIGHT),
         "Vol",
         TextFormat("%2.f%%", audio_volume * 100),
         &audio_volume,
@@ -93,7 +99,7 @@ void draw_gui()
     // volume Frequency slider
     // converting to frequency cause raygui sliders must be float
     GuiSlider(
-        RECT(gui_x + 20, gui_y + 40, 200, 20),
+        RECT(gui_x + PADDING, gui_y + 40, SLIDER_WIDTH, SLIDER_HEIGHT),
         "Freq",
         TextFormat("%dHz", (int) audio_freq_slider),
         &audio_freq_slider,
@@ -102,29 +108,29 @@ void draw_gui()
 
     // IPF
     GuiSlider(
-        RECT(gui_x + 20, gui_y + 80, 200, 20),
+        RECT(gui_x + PADDING, gui_y + 80, SLIDER_WIDTH, SLIDER_HEIGHT),
         "IPF",
         TextFormat("%dIPF", (int)IPF),
         &IPF,
         1.0f,
         25.0f);
 
-    const int second_row_x = gui_x + 270;
+    const int second_row_x = gui_x + COLUMN_WIDTH;
     // Quirks
     GuiCheckBox(
-        RECT(second_row_x, gui_y, 20, 20),
+        RECT(second_row_x, gui_y, BOX_LEN, BOX_LEN),
         "display wait",
         &(quirks.is_display_wait));
     GuiCheckBox(
-        RECT(second_row_x, gui_y + 40, 20, 20),
+        RECT(second_row_x, gui_y + 40, BOX_LEN, BOX_LEN),
         "8xy6 & 8xye: Vy into Vx before shift",
         &quirks.is_8xy6e_vy_into_vx);
     GuiCheckBox(
-        RECT(second_row_x, gui_y + 80, 20, 20),
+        RECT(second_row_x, gui_y + 80, BOX_LEN, BOX_LEN),
         "bxnn instead of bnnn",
         &quirks.is_bxnn);
     GuiCheckBox(
-        RECT(second_row_x, gui_y + 120, 20, 20),
+        RECT(second_row_x, gui_y + 120, BOX_LEN, BOX_LEN),
         "fx55 & fx65: update I",
         &quirks.is_fx565_change_I);
 }
