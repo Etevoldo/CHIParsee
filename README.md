@@ -31,3 +31,8 @@ Future Goals:
 - [ ] XO-CHIP
 - [ ] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
 - [ ] Other Keyboard-layout Configs
+
+# Libraries
+- [raylib](https://www.raylib.com/)
+- [raygui](https://github.com/raysan5/raygui)
+    - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) with some small modifications listed on the comments
