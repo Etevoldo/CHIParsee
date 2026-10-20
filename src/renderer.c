@@ -66,7 +66,6 @@ void draw(IO *io, Regs *regs)
                 file_dialog_state.fileNameText
             );
             strcpy(file_name_to_read, filepath);
-            printf("File to read:\n%s\n", file_name_to_read);
         }
         // TODO consider just using the .Select FilePressed
         is_file_selected = true;
