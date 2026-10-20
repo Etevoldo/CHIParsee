@@ -2,6 +2,7 @@
 *   CUSTOM CHANGES BY ETEVOLDO: 
 *       - Moved (and corrected the typo) of the PATH_SEPARATOR 
 *         macro to the non-implementation segment
+*       - Change all uses of "/" to the PATH_SEPARATOR macro for portability 
 *       - Removed "Dialog" from the hardcored string "Open File Dialog" @ line 276
 *   Window File Dialog v1.2 - Modal file dialog to open/save files
 *
@@ -328,10 +329,10 @@ void GuiWindowFileDialog(GuiWindowFileDialogState *state)
         {
             strcpy(state->fileNameText, GetFileName(state->dirFiles.paths[state->filesListActive]));
 
-            if (DirectoryExists(TextFormat("%s/%s", state->dirPathText, state->fileNameText)))
+            if (DirectoryExists(TextFormat("%s" PATH_SEPARATOR "%s", state->dirPathText, state->fileNameText)))
             {
                 if (TextIsEqual(state->fileNameText, "..")) strcpy(state->dirPathText, GetPrevDirectoryPath(state->dirPathText));
-                else strcpy(state->dirPathText, TextFormat("%s/%s", (strcmp(state->dirPathText, "/") == 0)? "" : state->dirPathText, state->fileNameText));
+                else strcpy(state->dirPathText, TextFormat("%s" PATH_SEPARATOR "%s", (strcmp(state->dirPathText, PATH_SEPARATOR) == 0)? "" : state->dirPathText, state->fileNameText));
 
                 strcpy(state->dirPathTextCopy, state->dirPathText);
 
@@ -356,7 +357,7 @@ void GuiWindowFileDialog(GuiWindowFileDialogState *state)
             if (*state->fileNameText)
             {
                 // Verify if a valid filename has been introduced
-                if (FileExists(TextFormat("%s/%s", state->dirPathText, state->fileNameText)))
+                if (FileExists(TextFormat("%s" PATH_SEPARATOR "%s", state->dirPathText, state->fileNameText)))
                 {
                     // Select filename from list view
                     for (unsigned int i = 0; i < state->dirFiles.count; i++)
@@ -411,14 +412,14 @@ void GuiWindowFileDialog(GuiWindowFileDialogState *state)
 // Compare two files from a directory
 static inline int FileCompare(const char *d1, const char *d2, const char *dir)
 {
-    const bool b1 = DirectoryExists(TextFormat("%s/%s", dir, d1));
-    const bool b2 = DirectoryExists(TextFormat("%s/%s", dir, d2));
+    const bool b1 = DirectoryExists(TextFormat("%s" PATH_SEPARATOR "%s", dir, d1));
+    const bool b2 = DirectoryExists(TextFormat("%s" PATH_SEPARATOR "%s", dir, d2));
 
     if (b1 && !b2) return -1;
     if (!b1 && b2) return 1;
 
-    if (!FileExists(TextFormat("%s/%s", dir, d1))) return 1;
-    if (!FileExists(TextFormat("%s/%s", dir, d2))) return -1;
+    if (!FileExists(TextFormat("%s" PATH_SEPARATOR "%s", dir, d1))) return 1;
+    if (!FileExists(TextFormat("%s" PATH_SEPARATOR "%s", dir, d2))) return -1;
 
     return strcmp(d1, d2);
 }
