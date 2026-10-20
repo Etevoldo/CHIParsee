@@ -66,10 +66,11 @@ void draw(IO *io, Regs *regs)
                 file_dialog_state.fileNameText
             );
             strcpy(file_name_to_read, filepath);
+
+            // TODO consider just using the .SelectFilePressed
+            is_file_selected = true;
+            file_dialog_state.SelectFilePressed = false;
         }
-        // TODO consider just using the .Select FilePressed
-        is_file_selected = true;
-        file_dialog_state.SelectFilePressed = false;
     }
 
     BeginDrawing();
@@ -109,18 +110,13 @@ void init_gui()
     inst_list = alloc_debugger_inst_array();
     quirks = init_quirks();
     file_dialog_state = InitGuiWindowFileDialog(GetWorkingDirectory());
+    file_dialog_state.windowBounds.height = DISPLAY_HEIGHT * SCALE + 100;
+    file_dialog_state.windowBounds.y = PADDING;
     is_file_selected = false;
 }
 
 void draw_gui(const int gui_x, const int gui_y)
 {
-    if (file_dialog_state.windowActive) GuiLock();
-    if (GuiButton(RECT(0, 0, 140, 30),
-        GuiIconText(ICON_FILE_OPEN, "Open rom"))) {
-            file_dialog_state.windowActive = true;
-    }
-    GuiUnlock();
-    GuiWindowFileDialog(&file_dialog_state);
 
     // volume slider
     GuiSlider(
@@ -168,6 +164,14 @@ void draw_gui(const int gui_x, const int gui_y)
         RECT(second_row_x, gui_y + 120, BOX_LEN, BOX_LEN),
         "fx55 & fx65: update I",
         &quirks.is_fx565_change_I);
+
+    if (file_dialog_state.windowActive) GuiLock();
+    if (GuiButton(RECT(0, 0, 140, 30),
+        GuiIconText(ICON_FILE_OPEN, "Open rom"))) {
+            file_dialog_state.windowActive = true;
+    }
+    GuiUnlock();
+    GuiWindowFileDialog(&file_dialog_state);
 }
 
 char ** alloc_debugger_inst_array()
