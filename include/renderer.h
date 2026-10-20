@@ -8,7 +8,7 @@ void init_gui();
 // Draw regular screen gui
 void draw(IO *io, Regs *regs); 
 // Draw debug gui
-void draw_gui();
+void draw_gui(const int gui_x, const int gui_y);
 // Draw debug gui
 void draw_debug(Regs *regs, bool keys_down[]);
 
@@ -27,5 +27,7 @@ void gui_set_step(bool value);
 float gui_get_volume();
 float gui_get_freq();
 Quirks gui_get_quirks();
+char * gui_get_file_name();
+void gui_set_file_name();
 
 void unload_gui();

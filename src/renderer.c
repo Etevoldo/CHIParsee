@@ -1,10 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "renderer.h"
 #include "instructions.h"
 #include "raylib.h"
 #include "types.h"
+
+// has to be included otherwise 
 #include "raygui.h"
+#include "gui_window_file_dialog.h"
+
+#ifdef _WIN32
+#define PATH_SEPARATOR "\\"
+#else
+#define PATH_SEPARATOR "/"
+#endif
 
 #define ON_COLOR CLITERAL(Color){ 243, 147, 51, 255 }
 #define OFF_COLOR CLITERAL(Color){ 51, 51, 51, 255 }
@@ -32,11 +42,16 @@ static float audio_volume;
 static Quirks quirks;
 static List bp_list;
 
+//file dialog
+static char file_name_to_read[512];
+static GuiWindowFileDialogState file_dialog_state;
+
 void draw(IO *io, Regs *regs)
 {
     io->display_wait = false;
     io->last_key_pressed = NO_KEY;
 
+    // update
     for (int y = 0; y < DISPLAY_HEIGHT; y++) {
         for (int x = 0; x < DISPLAY_WIDTH; x++) {
             int index = x + y * DISPLAY_WIDTH;
@@ -46,7 +61,21 @@ void draw(IO *io, Regs *regs)
             else ImageDrawPixel(&io->screen_image, x , y, ON_COLOR);
         }
     }
+
     UpdateTexture(io->screen_texture, io->screen_image.data);
+
+    if (file_dialog_state.SelectFilePressed) {
+        if (IsFileExtension(file_dialog_state.fileNameText, ".ch8")) {
+            const char *filepath = TextFormat(
+                "%s" PATH_SEPARATOR "%s",
+                file_dialog_state.dirPathText,
+                file_dialog_state.fileNameText
+            );
+            strcpy(file_name_to_read, filepath);
+            printf("File to read:\n%s\n", file_name_to_read);
+        }
+        file_dialog_state.SelectFilePressed = false;
+    }
 
     BeginDrawing();
         ClearBackground(BLACK);
@@ -65,6 +94,7 @@ void draw(IO *io, Regs *regs)
         draw_gui(
             PADDING,
             DISPLAY_HEIGHT * SCALE + UPPER_MENU_PADDING + PADDING);
+
     EndDrawing();
 }
 
@@ -83,10 +113,19 @@ void init_gui()
     bp_list = list_create(64);
     inst_list = alloc_debugger_inst_array();
     quirks = init_quirks();
+    file_dialog_state = InitGuiWindowFileDialog(GetWorkingDirectory());
 }
 
 void draw_gui(const int gui_x, const int gui_y)
 {
+    if (file_dialog_state.windowActive) GuiLock();
+    if (GuiButton(RECT(20, 20, 140, 30),
+        GuiIconText(ICON_FILE_OPEN, "Open rom"))) {
+            file_dialog_state.windowActive = true;
+    }
+    GuiUnlock();
+    GuiWindowFileDialog(&file_dialog_state);
+
     // volume slider
     GuiSlider(
         RECT(gui_x + PADDING, gui_y, SLIDER_WIDTH, SLIDER_HEIGHT),
@@ -359,6 +398,11 @@ float gui_get_freq()
 Quirks gui_get_quirks()
 {
     return quirks;
+}
+
+char * gui_get_file_name()
+{
+    return file_name_to_read;
 }
 
 void unload_gui()

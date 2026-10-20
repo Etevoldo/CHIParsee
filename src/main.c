@@ -2,9 +2,15 @@
 #include <unistd.h>
 #include <math.h>
 
+
+#include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
-#include "raylib.h"
+#undef RAYGUI_IMPLEMENTATION
+
+#define GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
+#include "gui_window_file_dialog.h"
+
 #include "types.h"
 #include "stack.h"
 #include "list.h"
