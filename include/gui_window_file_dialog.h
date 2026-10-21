@@ -2,7 +2,7 @@
 *   CUSTOM CHANGES BY ETEVOLDO: 
 *       - Moved (and corrected the typo) of the PATH_SEPARATOR 
 *         macro to the non-implementation segment
-*       - Change all uses of "/" to the PATH_SEPARATOR macro for portability 
+*       - Change all uses of "/" to the PATH_SEPARATOR macro for portability
 *       - Removed "Dialog" from the hardcored string "Open File Dialog" @ line 276
 *   Window File Dialog v1.2 - Modal file dialog to open/save files
 *
