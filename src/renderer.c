@@ -20,6 +20,7 @@
 #define SLIDER_WIDTH 200
 #define SLIDER_HEIGHT 20
 #define BOX_LEN 20
+#define FILENAME_BUFFER_SIZE 512
 
 static int inst_active;
 static int inst_focus;
@@ -36,7 +37,7 @@ static Quirks quirks;
 static List bp_list;
 
 //file dialog
-static char file_name_to_read[512];
+static char file_name_to_read[FILENAME_BUFFER_SIZE];
 static bool is_file_selected;
 static GuiWindowFileDialogState file_dialog_state;
 
@@ -58,19 +59,18 @@ void draw(IO *io, Regs *regs)
 
     UpdateTexture(io->screen_texture, io->screen_image.data);
 
-    if (file_dialog_state.SelectFilePressed) {
-        if (IsFileExtension(file_dialog_state.fileNameText, ".ch8")) {
-            const char *filepath = TextFormat(
-                "%s" PATH_SEPARATOR "%s",
-                file_dialog_state.dirPathText,
-                file_dialog_state.fileNameText
-            );
-            strcpy(file_name_to_read, filepath);
+    if (file_dialog_state.SelectFilePressed &&
+        IsFileExtension(file_dialog_state.fileNameText, ".ch8")) {
+        const char *filepath = TextFormat(
+            "%s" PATH_SEPARATOR "%s",
+            file_dialog_state.dirPathText,
+            file_dialog_state.fileNameText
+        );
+        strncpy(file_name_to_read, filepath, FILENAME_BUFFER_SIZE);
 
-            // TODO consider just using the .SelectFilePressed
-            is_file_selected = true;
-            file_dialog_state.SelectFilePressed = false;
-        }
+        // TODO consider just using the .SelectFilePressed
+        is_file_selected = true;
+        file_dialog_state.SelectFilePressed = false;
     }
 
     BeginDrawing();
