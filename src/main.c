@@ -2,16 +2,13 @@
 #include <unistd.h>
 #include <math.h>
 
-
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 #undef RAYGUI_IMPLEMENTATION
-
 #define GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
 #include "gui_window_file_dialog.h"
 #undef GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
-
 #include "types.h"
 #include "stack.h"
 #include "list.h"
@@ -20,9 +17,7 @@
 #include "audio.h"
 #include "io.h"
 #include "style_amber.h"
-
-#define SAMPLE_RATE 44100
-#define BUFFER_SIZE 4096
+#include "platform_finder.h"
 
 bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
 void close_services(AudioStream stream,
@@ -72,6 +67,12 @@ int main(int argc, char *argv[])
         if (gui_is_file_dropped()) {
             UnloadTexture(io.screen_texture);
             UnloadImage(io.screen_image);
+
+            char hash[SHA1_STR_SIZE];
+            file_checksum(gui_get_file_name(), hash);
+            Program_data p_data;
+            check_rom(hash, &p_data);
+
             regs = init_regs();
             io = init_io();
             if (load_rom(regs.ram, gui_get_file_name())) {
