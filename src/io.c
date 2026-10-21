@@ -65,7 +65,10 @@ static int map_key(int key)
 int load_rom(u8 *ram, char *file_name)
 {
     FILE *rom;
-    if ((rom = fopen(file_name, "rb")) == NULL) return 1;
+    if ((rom = fopen(file_name, "rb")) == NULL) {
+        perror("Could not open file");
+        return 1;
+    }
 
     fread(ram + PC_START, 1, RAM_SIZE - PC_START, rom);
 

@@ -73,7 +73,9 @@ int main(int argc, char *argv[])
             UnloadImage(io.screen_image);
             regs = init_regs();
             io = init_io();
-            load_rom(regs.ram, gui_get_file_name());
+            if (load_rom(regs.ram, gui_get_file_name())) {
+                gui_set_file_dropped(false);
+            }
             load_font(regs.ram);
 
             gui_set_file_dropped(false);
