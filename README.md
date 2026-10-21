@@ -33,6 +33,8 @@ Future Goals:
 - [ ] Other Keyboard-layout Configs
 
 # Libraries
-- [raylib](https://www.raylib.com/)
-- [raygui](https://github.com/raysan5/raygui)
+- [raylib](https://www.raylib.com/) by raysan. awesome and simple graphics and input library.
+- [raygui](https://github.com/raysan5/raygui) ditto
     - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) with some small modifications listed on the comments
+- [teenysha1](https://github.com/tsoding/teenysha1) by tsoding (that tsoding)
+- [cJSON](https://github.com/DaveGamble/cJSON) by Dave Gamble and cJSON contributors. easy and effective to use json parser
