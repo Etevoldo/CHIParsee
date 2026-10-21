@@ -29,12 +29,16 @@ Future Goals:
     - [x] Instructions scroller
 - [ ] SUPER-CHIP
 - [ ] XO-CHIP
-- [ ] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
+- [x] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
 - [ ] Other Keyboard-layout Configs
 
 # Libraries
+
+All libraries licenses are either in the [externals directory](/externals/) or directly in the code as comments.
+
 - [raylib](https://www.raylib.com/) by raysan. awesome and simple graphics and input library.
-- [raygui](https://github.com/raysan5/raygui) ditto
-    - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) with some small modifications listed on the comments
-- [teenysha1](https://github.com/tsoding/teenysha1) by tsoding (that tsoding)
-- [cJSON](https://github.com/DaveGamble/cJSON) by Dave Gamble and cJSON contributors. easy and effective to use json parser
+- [raygui](https://github.com/raysan5/raygui) ditto.
+    - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) With some small modifications listed on the comments at the beggining of the file.
+- [teenysha1](https://github.com/tsoding/teenysha1) by tsoding (yes, that tsoding)
+- [cJSON](https://github.com/DaveGamble/cJSON) by Dave Gamble and cJSON contributors. Easy and effective to use json parser.
+- [chip-8-database](https://github.com/chip-8/chip-8-database) by The CHIP-8 database authors.
