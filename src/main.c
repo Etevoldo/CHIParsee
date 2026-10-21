@@ -10,6 +10,7 @@
 
 #define GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
 #include "gui_window_file_dialog.h"
+#undef RAYGUI_IMPLEMENTATION
 
 #include "types.h"
 #include "stack.h"
