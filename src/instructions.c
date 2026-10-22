@@ -16,6 +16,7 @@ Quirks init_quirks()
         .is_jump = false,
         .is_vblank = true,
         .is_logic = true,
+        .ipf = 15.0f
     };
 }
 
