@@ -267,28 +267,46 @@ void op_FX00(u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
         }
         break;
     case 0x0055:
-        if (quirks.is_memory_increment_by_x) {
-            for (int i = 0; i < x_index; i++, regs->index++) {
-                regs->ram[regs->index] = regs->v[i];
+        if (quirks.is_memory_leave_i_unchanged) {
+            for (int i = 0; i <= x_index; i++) {
+                regs->ram[regs->index + i] = regs->v[i];
             }
             break;
         }
-        for (int i = 0; i <= x_index; i++) {
-            regs->ram[regs->index + i] = regs->v[i];
+        else {
+            if (quirks.is_memory_increment_by_x) {
+                for (int i = 0; i < x_index; i++, regs->index++) {
+                    regs->ram[regs->index] = regs->v[i];
+                }
+                break;
+            }
+            if (quirks.is_memory_increment_by_x) {
+                regs->index += x_index;
+            }
+            else {
+                regs->index += x_index + 1;
+            }
+            break;
         }
-        regs->index += x_index + 1;
-        break;
     case 0x0065:
-        if (quirks.is_memory_increment_by_x) {
+        if (quirks.is_memory_leave_i_unchanged) {
+            for (int i = 0; i <= x_index; i++) {
+                regs->v[i] = regs->ram[regs->index + i];
+            }
+            break;
+        }
+        else {
             for (int i = 0; i <= x_index; i++, regs->index++) {
                 regs->v[i] = regs->ram[regs->index];
             }
+            if (quirks.is_memory_increment_by_x) {
+                regs->index += x_index;
+            }
+            else {
+                regs->index += x_index + 1;
+            }
             break;
         }
-        for (int i = 0; i <= x_index; i++) {
-            regs->v[i] = regs->ram[regs->index + i];
-        }
-        regs->index += x_index + 1;
         break;
     default:
         break;
