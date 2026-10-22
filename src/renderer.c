@@ -165,6 +165,18 @@ void draw_gui(const int gui_x, const int gui_y)
         "fx55 & fx65: Leave I unchanged",
         &quirks.is_memory_leave_i_unchanged);
 
+    const int third_row_x = second_row_x + COLUMN_WIDTH;
+
+    GuiCheckBox(
+        RECT(third_row_x, gui_y, BOX_LEN, BOX_LEN),
+        "8xy1 & 8xy2 & 8xy3: reset Vf",
+        &quirks.is_logic);
+
+    GuiCheckBox(
+        RECT(third_row_x, gui_y + 40, BOX_LEN, BOX_LEN),
+        "8xy6 & 8xye: increment by x",
+        &quirks.is_memory_increment_by_x);
+
     if (file_dialog_state.windowActive) GuiLock();
     if (GuiButton(RECT(0, 0, 140, 30),
         GuiIconText(ICON_FILE_OPEN, "Open rom"))) {
