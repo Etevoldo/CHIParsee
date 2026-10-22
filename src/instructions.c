@@ -15,7 +15,7 @@ Quirks init_quirks()
         .is_wrap = false,
         .is_jump = false,
         .is_vblank = true,
-        .is_logic = false,
+        .is_logic = true,
     };
 }
 
@@ -177,15 +177,15 @@ void op_8000(
         break;
     case 0x0001:
         v[x_index] = v[x_index] | v[y_index];
-        v[0xF] = 0;
+        if (quirks.is_logic) v[0xF] = 0;
         break;
     case 0x0002:
         v[x_index] = v[x_index] & v[y_index];
-        v[0xF] = 0;
+        if (quirks.is_logic) v[0xF] = 0;
         break;
     case 0x0003:
         v[x_index] = v[x_index] ^ v[y_index];
-        v[0xF] = 0;
+        if (quirks.is_logic) v[0xF] = 0;
         break;
     case 0x0004:
         sum = v[x_index] + v[y_index];
@@ -278,7 +278,6 @@ void op_FX00(u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
                 for (int i = 0; i < x_index; i++, regs->index++) {
                     regs->ram[regs->index] = regs->v[i];
                 }
-                break;
             }
             if (quirks.is_memory_increment_by_x) {
                 regs->index += x_index;
