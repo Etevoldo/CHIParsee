@@ -28,7 +28,6 @@ static int inst_scrollIndex;
 static char **inst_list;
 static bool is_paused;
 static bool is_step;
-static float IPF;
 static char bp_text[64];
 static bool bp_is_edit_on;
 static float audio_freq_slider;
@@ -102,7 +101,6 @@ void init_gui()
     inst_list = NULL;
     is_paused = false;
     is_step = false;
-    IPF = 15.0f;
     bp_is_edit_on = false;
     audio_freq_slider = 440.0f;
     audio_volume = 7.0f;
@@ -141,8 +139,8 @@ void draw_gui(const int gui_x, const int gui_y)
     GuiSlider(
         RECT(gui_x + PADDING, gui_y + 80, SLIDER_WIDTH, SLIDER_HEIGHT),
         "IPF",
-        TextFormat("%dIPF", (int)IPF),
-        &IPF,
+        TextFormat("%dIPF", (int)quirks.ipf),
+        &quirks.ipf,
         1.0f,
         25.0f);
 
@@ -374,7 +372,7 @@ bool gui_bp_contains(u16 address)
 
 int gui_get_ipf()
 {
-    return IPF;
+    return (int)quirks.ipf;
 }
 
 bool gui_is_paused()
