@@ -9,10 +9,13 @@
 Quirks init_quirks()
 {
     return (Quirks) {
-        .is_vblank = true,
-        .is_shift = true,
+        .is_shift = false,
+        .is_memory_increment_by_x = false,
+        .is_memory_leave_i_unchanged = false,
+        .is_wrap = false,
         .is_jump = false,
-        .is_memory_increment_by_x = false
+        .is_vblank = true,
+        .is_logic = false,
     };
 }
 
