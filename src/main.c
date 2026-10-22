@@ -26,16 +26,17 @@ void close_services(AudioStream stream,
 
 int main(void)
 {
+    char title[512] = "CHIParsee";
     #ifdef DEBUG
     InitWindow(
         DISPLAY_WIDTH * SCALE + 510,
         DISPLAY_HEIGHT * SCALE + 200,
-        "Chip-8 Emu");
+        title);
     #else
     InitWindow(
         DISPLAY_WIDTH * SCALE,
         DISPLAY_HEIGHT * SCALE + 200,
-        "Chip-8 Emu");
+        title);
     #endif
     GuiLoadStyleAmber();
 
