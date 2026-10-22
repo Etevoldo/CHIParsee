@@ -410,6 +410,11 @@ Quirks gui_get_quirks()
     return quirks;
 }
 
+void gui_set_quirks(Quirks value)
+{
+    quirks = value;
+}
+
 char * gui_get_file_name()
 {
     return file_name_to_read;

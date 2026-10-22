@@ -27,6 +27,7 @@ void gui_set_step(bool value);
 float gui_get_volume();
 float gui_get_freq();
 Quirks gui_get_quirks();
+void gui_set_quirks(Quirks value);
 char * gui_get_file_name();
 void gui_set_file_name();
 bool gui_is_file_dropped();
