@@ -137,7 +137,7 @@ bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data)
     Quirks quirks = gui_get_quirks();
     const int IPF = gui_get_ipf();        // instructions per frame
     for (int i = 0; i < IPF; i++) {
-        if (io->display_wait && quirks.is_display_wait) break; 
+        if (io->display_wait && quirks.is_vblank) break; 
 
         while (gui_is_paused()) {
             // step 1 instruction
