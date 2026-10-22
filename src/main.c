@@ -97,7 +97,7 @@ int main(void)
         usleep(frame_time * 1000);
     }
 
-    unload_gui();
+    gui_unload();
     close_services(stream, io.screen_image, io.screen_texture);
 
     return 0;

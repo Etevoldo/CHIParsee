@@ -427,7 +427,7 @@ void gui_set_file_dropped(bool value)
     is_file_selected = value;
 }
 
-void unload_gui()
+void gui_unload()
 {
     #ifdef DEBUG
     free_debugger_inst_array();

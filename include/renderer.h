@@ -32,4 +32,4 @@ void gui_set_file_name();
 bool gui_is_file_dropped();
 void gui_set_file_dropped(bool value);
 
-void unload_gui();
+void gui_unload();
