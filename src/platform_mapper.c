@@ -1,4 +1,4 @@
-#include "platform_finder.h"
+#include "platform_mapper.h"
 #include "cJSON.h"
 #include "raylib.h"
 #define TEENY_SHA1_IMPLEMENTATION

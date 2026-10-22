@@ -17,7 +17,7 @@
 #include "audio.h"
 #include "io.h"
 #include "style_amber.h"
-#include "platform_finder.h"
+#include "platform_mapper.h"
 
 bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
 void close_services(AudioStream stream,
