@@ -44,10 +44,13 @@ typedef struct {
 } IO;
 
 typedef struct {
-    bool is_display_wait;
-    bool is_8xy6e_vy_into_vx;
-    bool is_bxnn;
-    bool is_fx565_change_I;
+    bool is_shift;
+    bool is_memory_increment_by_x;
+    bool is_memory_leave_i_unchanged;
+    bool is_wrap;
+    bool is_jump;
+    bool is_vblank;
+    bool logic
 } Quirks;
 
 typedef struct {

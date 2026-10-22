@@ -9,10 +9,10 @@
 Quirks init_quirks()
 {
     return (Quirks) {
-        .is_display_wait = true,
-        .is_8xy6e_vy_into_vx = true,
-        .is_bxnn = false,
-        .is_fx565_change_I = false
+        .is_vblank = true,
+        .is_shift = true,
+        .is_jump = false,
+        .is_memory_increment_by_x = false
     };
 }
 
@@ -98,7 +98,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         regs->index = nnn;
         break;
     case 0xB000:
-        if (quirks.is_bxnn) { regs->pc = regs->v[n] + kk; }
+        if (quirks.is_jump) { regs->pc = regs->v[n] + kk; }
         else regs->pc = regs->v[0x0] + nnn;
         break;
     case 0xC000:
@@ -197,7 +197,7 @@ void op_8000(
         v[0xF] = (sub < 0) ? 0 : 1;
         break;
     case 0x0006:
-        if (quirks.is_8xy6e_vy_into_vx) { v[x_index] = v[y_index]; }
+        if (quirks.is_shift) { v[x_index] = v[y_index]; }
         shifted_bit = v[x_index] & 0b00000001;
 
         v[x_index] = v[x_index] >> 1;
@@ -211,7 +211,7 @@ void op_8000(
         v[0xF] = (sub < 0) ? 0 : 1;
         break;
     case 0x000E:
-        if (quirks.is_8xy6e_vy_into_vx) { v[x_index] = v[y_index]; }
+        if (quirks.is_shift) { v[x_index] = v[y_index]; }
         int shifted_bit = (v[x_index] & 0b10000000) >> 7;
 
         v[x_index] = v[x_index] << 1;
@@ -264,7 +264,7 @@ void op_FX00(u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
         }
         break;
     case 0x0055:
-        if (quirks.is_fx565_change_I) {
+        if (quirks.is_memory_increment_by_x) {
             for (int i = 0; i < x_index; i++, regs->index++) {
                 regs->ram[regs->index] = regs->v[i];
             }
@@ -276,7 +276,7 @@ void op_FX00(u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
         regs->index += x_index + 1;
         break;
     case 0x0065:
-        if (quirks.is_fx565_change_I) {
+        if (quirks.is_memory_increment_by_x) {
             for (int i = 0; i <= x_index; i++, regs->index++) {
                 regs->v[i] = regs->ram[regs->index];
             }
