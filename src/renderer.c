@@ -142,7 +142,7 @@ void draw_gui(const int gui_x, const int gui_y)
         TextFormat("%dIPF", (int)quirks.ipf),
         &quirks.ipf,
         1.0f,
-        25.0f);
+        40.0f);
 
     const int second_row_x = gui_x + COLUMN_WIDTH;
     // Quirks
