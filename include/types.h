@@ -50,7 +50,7 @@ typedef struct {
     bool is_wrap;
     bool is_jump;
     bool is_vblank;
-    bool logic
+    bool is_logic;
 } Quirks;
 
 typedef struct {
