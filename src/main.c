@@ -72,7 +72,19 @@ int main(void)
             char hash[SHA1_STR_SIZE];
             file_checksum(gui_get_file_name(), hash);
             Program_data p_data;
-            check_rom(hash, &p_data);
+            if (!check_rom(hash, &p_data)) {
+                sprintf_s(
+                    title,
+                    512,
+                    "CHIParsee: Running \"%s\" with \"%s\" configuration",
+                    p_data.filename,
+                    p_data.platform
+                );
+                SetWindowTitle(title);
+                Quirks quirks = map_platform_quirks(p_data.platform);
+                gui_set_quirks(quirks);
+            }
+            free_program_data(&p_data);
 
             regs = init_regs();
             io = init_io();
