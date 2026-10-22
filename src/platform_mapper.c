@@ -144,7 +144,7 @@ Quirks map_platform_quirks(const char *platform)
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "logic");
 
     cJSON *defaultTickrate_item
-        = cJSON_GetObjectItemCaseSensitive(platform_item, "defaultTickRate");
+        = cJSON_GetObjectItemCaseSensitive(platform_item, "defaultTickrate");
 
     Quirks q = (Quirks) {
         .is_shift = cJSON_IsTrue(shift),
