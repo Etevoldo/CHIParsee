@@ -100,3 +100,64 @@ void file_checksum(const char *rom_name, char *out)
 
     UnloadFileData(rom);
 }
+
+
+// frees memory used by strings alocated by `check_rom`'s data_out
+void free_program_data(Program_data *data)
+{
+    free((void*)data->description);
+    free((void*)data->platform);
+    free((void*)data->filename);
+}
+
+// maps a `plataform` name to a Quirk configuration
+Quirks map_platform_quirks(const char *platform)
+{
+    char *platforms_text = LoadFileText("resources/platforms.json");
+    cJSON *platforms = cJSON_Parse(platforms_text);
+    UnloadFileText(platforms_text);
+
+    cJSON *platform_item = NULL;
+    cJSON_ArrayForEach(platform_item, platforms) {
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(platform_item, "id");
+        char *name = cJSON_GetStringValue(id);
+        if (strcmp(name, platform) == 0) {
+            break; // platform_item is now pointing to the plataform desired
+        }
+    }
+    cJSON *quirks_item 
+        = cJSON_GetObjectItemCaseSensitive(platform_item, "quirks");
+    cJSON *shift
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "shift");
+    cJSON *memoryIncrementByX 
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "memoryIncrementByX");
+    cJSON *memoryLeaveIUnchanged
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, 
+            "memoryLeaveIUnchanged");
+    cJSON *wrap
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "wrap");
+    cJSON *jump 
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "jump");
+    cJSON *vblank 
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "vblank");
+    cJSON *logic
+        = cJSON_GetObjectItemCaseSensitive(quirks_item, "logic");
+
+    cJSON *defaultTickrate_item
+        = cJSON_GetObjectItemCaseSensitive(platform_item, "defaultTickRate");
+
+    Quirks q = (Quirks) {
+        .is_shift = cJSON_IsTrue(shift),
+        .is_memory_increment_by_x = cJSON_IsTrue(memoryIncrementByX),
+        .is_memory_leave_i_unchanged = cJSON_IsTrue(memoryLeaveIUnchanged),
+        .is_wrap = cJSON_IsTrue(wrap),
+        .is_jump = cJSON_IsTrue(jump),
+        .is_vblank = cJSON_IsTrue(vblank),
+        .is_logic = cJSON_IsTrue(logic),
+        .ipf = cJSON_GetNumberValue(defaultTickrate_item)
+    };
+    // freeing memory
+    cJSON_Delete(platforms);
+
+    return q;
+}
