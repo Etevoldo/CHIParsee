@@ -66,7 +66,7 @@ void draw(IO *io, Regs *regs)
             file_dialog_state.dirPathText,
             file_dialog_state.fileNameText
         );
-        strncpy(file_name_to_read, filepath, FILENAME_BUFFER_SIZE);
+        strncpy(file_name_to_read, filepath, FILENAME_BUFFER_SIZE - 1);
 
         // TODO consider just using the .SelectFilePressed
         is_file_selected = true;
