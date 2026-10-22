@@ -51,6 +51,7 @@ typedef struct {
     bool is_jump;
     bool is_vblank;
     bool is_logic;
+    float ipf;
 } Quirks;
 
 typedef struct {
