@@ -151,19 +151,19 @@ void draw_gui(const int gui_x, const int gui_y)
     GuiCheckBox(
         RECT(second_row_x, gui_y, BOX_LEN, BOX_LEN),
         "display wait",
-        &(quirks.is_display_wait));
+        &(quirks.is_vblank));
     GuiCheckBox(
         RECT(second_row_x, gui_y + 40, BOX_LEN, BOX_LEN),
-        "8xy6 & 8xye: Vy into Vx before shift",
-        &quirks.is_8xy6e_vy_into_vx);
+        "8xy6 & 8xye: Vx as input and output",
+        &quirks.is_shift);
     GuiCheckBox(
         RECT(second_row_x, gui_y + 80, BOX_LEN, BOX_LEN),
         "bxnn instead of bnnn",
-        &quirks.is_bxnn);
+        &quirks.is_jump);
     GuiCheckBox(
         RECT(second_row_x, gui_y + 120, BOX_LEN, BOX_LEN),
-        "fx55 & fx65: update I",
-        &quirks.is_fx565_change_I);
+        "fx55 & fx65: Leave I unchanged",
+        &quirks.is_memory_leave_i_unchanged);
 
     if (file_dialog_state.windowActive) GuiLock();
     if (GuiButton(RECT(0, 0, 140, 30),
