@@ -24,7 +24,7 @@ void close_services(AudioStream stream,
     Image screen_image,
     Texture screen_texture);
 
-int main(int argc, char *argv[])
+int main(void)
 {
     #ifdef DEBUG
     InitWindow(
