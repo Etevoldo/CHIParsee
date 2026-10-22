@@ -2,8 +2,13 @@
 
 # What is this
 
-Yet another CHIP-8 emulator.
+CHIParsee is Yet another CHIP-8 emulator.
 Written with C with help of [raylib](https://github.com/raysan5/raylib) as window and graphics.
+
+# Features
+
+ - Sorta of a debugger, compile with -DDEBUG (default) to have a view of the ram and step through the instructions, you can add breakpoints in the upper left text box
+ - Automatic plataform configuration, you most probably won't need to mess arround with the configuring quirks thanks to the CHIP-8 database.
 
 # How to run (Windows)
 
@@ -31,6 +36,7 @@ Future Goals:
 - [ ] XO-CHIP
 - [x] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
 - [ ] Other Keyboard-layout Configs
+- [ ] Other Systems Compilation Scripts
 
 # Libraries
 
@@ -38,7 +44,7 @@ All libraries licenses are either in the [externals directory](/externals/) or d
 
 - [raylib](https://www.raylib.com/) by raysan. awesome and simple graphics and input library.
 - [raygui](https://github.com/raysan5/raygui) ditto.
-    - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) With some small modifications listed on the comments at the beggining of the file.
+    - [file_dialog_window](https://github.com/raysan5/raygui/blob/master/examples/custom_file_dialog/gui_window_file_dialog.h) With some small modifications listed on the comments at the beggining of the ![file](/include/gui_window_file_dialog.h).
 - [teenysha1](https://github.com/tsoding/teenysha1) by tsoding (yes, that tsoding)
 - [cJSON](https://github.com/DaveGamble/cJSON) by Dave Gamble and cJSON contributors. Easy and effective to use json parser.
 - [chip-8-database](https://github.com/chip-8/chip-8-database) by The CHIP-8 database authors.
