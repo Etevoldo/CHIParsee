@@ -125,20 +125,20 @@ Quirks map_platform_quirks(const char *platform)
             break; // platform_item is now pointing to the plataform desired
         }
     }
-    cJSON *quirks_item 
+    cJSON *quirks_item
         = cJSON_GetObjectItemCaseSensitive(platform_item, "quirks");
     cJSON *shift
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "shift");
-    cJSON *memoryIncrementByX 
+    cJSON *memoryIncrementByX
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "memoryIncrementByX");
     cJSON *memoryLeaveIUnchanged
         = cJSON_GetObjectItemCaseSensitive(quirks_item, 
             "memoryLeaveIUnchanged");
     cJSON *wrap
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "wrap");
-    cJSON *jump 
+    cJSON *jump
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "jump");
-    cJSON *vblank 
+    cJSON *vblank
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "vblank");
     cJSON *logic
         = cJSON_GetObjectItemCaseSensitive(quirks_item, "logic");
