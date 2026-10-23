@@ -12,9 +12,9 @@ typedef struct {
     u16 arr[16];
 } Stack;
 
-#define DISPLAY_WIDTH 64
-#define DISPLAY_HEIGHT 32
-#define SCALE 15
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 64
+#define SCALE 7
 #define PC_START 0x200
 #define FONT_START 0x055
 #define RAM_SIZE 4096
@@ -32,6 +32,7 @@ typedef struct {
     u8    ram[RAM_SIZE];
     Stack stack;
     u16   pc;
+    bool  is_extended_mode;
 } Regs;
 
 typedef struct {

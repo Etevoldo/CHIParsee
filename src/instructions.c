@@ -30,6 +30,7 @@ Regs init_regs()
         .ram = { 0 },
         .stack = (Stack) {0, { 0 }},
         .pc = PC_START,
+        .is_extended_mode = false
     };
     load_font(regs.ram);
     return regs;
@@ -137,8 +138,16 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
 void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
 {
     const u16 spriteIndex = regs->index;
-    const u8 xAnchor = regs->v[x_index] % DISPLAY_WIDTH;
-    const u8 yAnchor = regs->v[y_index] % DISPLAY_HEIGHT;
+
+    int width_cap = DISPLAY_WIDTH;
+    int height_cap = DISPLAY_HEIGHT;
+    // consider the screen 2x smaller in lores mode
+    if (!regs->is_extended_mode) {
+        width_cap /= 2;
+        height_cap /= 2;
+    }
+    const u8 xAnchor = regs->v[x_index] % width_cap;
+    const u8 yAnchor = regs->v[y_index] % height_cap;
     regs->v[0xF] = 0;
 
     u8 x = xAnchor;
@@ -150,7 +159,20 @@ void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
         int byte = regs->ram[spriteIndex + byteN];
         for (int bitN = 0; bitN < 8; bitN++) {
             bool isBitOn = byte & mask;
-            bool isCollision = drawPixel(x, y, isBitOn, display);
+
+            bool isCollision = false;
+            if (isBitOn) {
+                if (!regs->is_extended_mode) {
+                    // 2x2 pixel
+                    isCollision = drawPixel(x*2  , y*2,   isBitOn, display);
+                    isCollision = drawPixel(x*2+1, y*2,   isBitOn, display);
+                    isCollision = drawPixel(x*2  , y*2+1, isBitOn, display);
+                    isCollision = drawPixel(x*2+1, y*2+1, isBitOn, display);
+                }
+                else {
+                    isCollision = drawPixel(x, y, isBitOn, display);
+                }
+            }
 
             if (isCollision) { 
                 regs->v[0xF] = 1;
@@ -159,10 +181,10 @@ void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
             mask = mask >> 1;
             x++;
 
-            if (x >= DISPLAY_WIDTH) break;
+            if (x >= width_cap) break;
         }
         y++;
-        if (y >= DISPLAY_HEIGHT) break;
+        if (y >= height_cap) break;
     }
 }
 
