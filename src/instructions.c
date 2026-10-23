@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "instructions.h"
@@ -142,11 +143,12 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         op_FX00(x, other_types, regs, io, quirks);
         break;
     default:
+        printf("Unknown/Unimplemented instruction: %04X", instruc);
         break;
     }
 }
 
-void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
+static void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
 {
     if (n == 0) n = 16; // DXY0
     const u16 spriteIndex = regs->index;
@@ -213,7 +215,7 @@ static void draw_byte(
     }
 }
 
-void op_8000(
+static void op_8000(
     u8 x_index, u8 y_index, int logical_type,
     Regs *regs, Quirks quirks)
 {
@@ -274,7 +276,8 @@ void op_8000(
     }
 }
 
-void op_FX00(u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
+static void op_FX00(
+    u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
 {
     switch (other_type) {
     case 0x0007:
