@@ -112,6 +112,12 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         break;
     case 0xD000:
         io->display_wait = true;
+
+        if (n == 0) {
+            op_DXY0(x, y, regs, io->display);
+            break;
+        }
+    
         op_DXYN(x, y, n, regs, io->display);
         break;
     case 0xE000:
@@ -186,6 +192,66 @@ void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
         y++;
         if (y >= height_cap) break;
     }
+}
+
+void op_DXY0(u8 x_index, u8 y_index, Regs *regs, bool display[])
+{
+    const u16 spriteIndex = regs->index;
+
+    int width_cap = DISPLAY_WIDTH;
+    int height_cap = DISPLAY_HEIGHT;
+    // consider the screen 2x smaller in lores mode
+    if (!regs->is_extended_mode) {
+        width_cap /= 2;
+        height_cap /= 2;
+    }
+    const u8 xAnchor = regs->v[x_index] % width_cap;
+    const u8 yAnchor = regs->v[y_index] % height_cap;
+    regs->v[0xF] = 0;
+
+    u8 x = xAnchor;
+    u8 y = yAnchor;
+
+    for (int byteN = 0; byteN < 16; byteN++) {
+        // do not rewind on odd bytes (next row)
+        if (regs->is_extended_mode && (byteN % 2 == 0) ) {
+            x = xAnchor;
+        }
+        else if (!regs->is_extended_mode) {
+            x = xAnchor;
+        }
+        int mask = 0b10000000; // no digit separator in C :(
+        int byte = regs->ram[spriteIndex + byteN];
+        for (int bitN = 0; bitN < 8; bitN++) {
+            bool isBitOn = byte & mask;
+
+            bool isCollision = false;
+            if (isBitOn) {
+                if (!regs->is_extended_mode) {
+                    // 2x2 pixel
+                    isCollision = drawPixel(x*2  , y*2,   isBitOn, display);
+                    isCollision = drawPixel(x*2+1, y*2,   isBitOn, display);
+                    isCollision = drawPixel(x*2  , y*2+1, isBitOn, display);
+                    isCollision = drawPixel(x*2+1, y*2+1, isBitOn, display);
+                }
+                else {
+                    isCollision = drawPixel(x, y, isBitOn, display);
+                }
+            }
+
+            if (isCollision) { 
+                regs->v[0xF] = 1;
+            }
+
+            mask = mask >> 1;
+            x++;
+
+            if (x >= width_cap) break;
+        }
+        y++;
+        if (y >= height_cap) break;
+    }
+
 }
 
 void op_8000(
