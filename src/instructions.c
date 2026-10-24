@@ -310,6 +310,12 @@ static void op_FX00(
         regs->index += regs->v[x_index];
         break;
     case 0x0029:
+        // big font load
+        if ( 15 < regs->v[x_index] && regs->v[x_index] < 26) {
+            int big_index = regs->v[x_index] - 15;
+            regs->index = BIG_FONT_START + (big_index * 8);
+        }
+        // regular font
         u16 last_nibble = regs->v[x_index] & 0x0F;
         regs->index = FONT_START + (last_nibble * 5);
         break;
