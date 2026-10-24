@@ -81,6 +81,14 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         else if (other_types == 0x00EE) {
             regs->pc = stackPop(&(regs->stack));
         }
+        else if (other_types == 0x00FE) {
+            clear_display(io->display);
+            regs->is_extended_mode = false;
+        }
+        else if (other_types == 0x00FF) {
+            clear_display(io->display);
+            regs->is_extended_mode = true;
+        }
         break;
     case 0x1000:
         regs->pc = nnn;
@@ -279,6 +287,7 @@ static void op_8000(
 static void op_FX00(
     u8 x_index, int other_type, Regs *regs, IO *io, Quirks quirks)
 {
+    static u8 storage[8] = {0};
     switch (other_type) {
     case 0x0007:
         regs->v[x_index] = regs->delay;
@@ -343,7 +352,19 @@ static void op_FX00(
             regs->index += x_index + 1;
         }
         break;
+    case 0x0075:
+        for (int i = 0; i < x_index; i++) {
+            storage[i] = regs->v[i];
+        }
+        break;
+    case 0x0085:
+        for (int i = 0; i < x_index; i++) {
+            regs->v[i] = storage[i];
+        }
+        break;
     default:
+        printf("Unknown/Unimplemented instruction: F%01X%02X",
+            x_index, other_type);
         break;
     }
 }
