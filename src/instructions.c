@@ -75,6 +75,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
     // execute
     switch (type) {
     case 0x0000:
+        // TODO 
         if (other_types == 0x0E0) {
             clear_display(io->display);
         }
@@ -85,9 +86,16 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
             clear_display(io->display);
             regs->is_extended_mode = false;
         }
+        else if (other_types == 0x00FD) {
+            exit(EXIT_SUCCESS);
+        }
         else if (other_types == 0x00FF) {
             clear_display(io->display);
             regs->is_extended_mode = true;
+        }
+        else if (y == 0xC) { //scroll
+            if (n == 0) exit(EXIT_SUCCESS);
+            // TODO SCROLL
         }
         break;
     case 0x1000:
