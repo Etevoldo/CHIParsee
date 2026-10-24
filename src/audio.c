@@ -28,9 +28,8 @@ Audio_data init_audio_vars(AudioStream stream)
 
 void sample_audio_buffer(Audio_data *audio)
 {
+    const int wavelength = SAMPLE_RATE / audio->frequency;
     for (int i = 0; i < BUFFER_SIZE; i++) {
-        int wavelength = SAMPLE_RATE / audio->frequency;
-
         // square wave
         audio->buffer[i] = sinf(
             2* PI * audio->frequency
