@@ -318,6 +318,11 @@ void draw_debug(Regs *regs, bool keys_down[])
         RECT(debug_x + 69 + padding, debug_y + 340 + padding + label_spacing*3,
             label_width, label_height ),
         TextFormat("DT = %0.4X", regs->delay));
+    // lores
+    GuiLabel(
+        RECT(debug_x + 69 + padding, debug_y + 340 + padding + label_spacing*4,
+            label_width, label_height ),
+        TextFormat("%s", regs->is_extended_mode ? "Hires" : "Lores"));
 
     // Breakpoints
     const int bp_x = debug_x + 138 + 200 + padding;
