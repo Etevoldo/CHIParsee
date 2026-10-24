@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "renderer.h"
 #include "instructions.h"
 #include "io.h"
 #include "stack.h"
@@ -187,9 +188,9 @@ static void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
         x = xAnchor;
         int byte;
         if ((n == 16) && regs->is_extended_mode) {
-            byte = regs->ram[spriteIndex + row];
+            byte = regs->ram[spriteIndex + row*2];
             draw_byte(regs, display, byte, x, y, width_cap);
-            byte = regs->ram[spriteIndex + row + 1];
+            byte = regs->ram[spriteIndex + row*2 + 1];
             draw_byte(regs, display, byte, x+8, y, width_cap);
         }
         else {
