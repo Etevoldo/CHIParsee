@@ -41,15 +41,3 @@ void sample_audio_buffer(Audio_data *audio)
         if (audio->sample_step >= wavelength) audio->sample_step = 0;
     }
 }
-
-void init_audio_buffer(float buffer[], int *sineIndex)
-{
-    const int sineFrequency = 440;
-
-    for (int i = 0; i < BUFFER_SIZE; i++) {
-        int wavelength = SAMPLE_RATE / sineFrequency;
-        buffer[i] = sinf(2* PI * (*sineIndex)/wavelength) > 0 ? 1 : -1;
-        (*sineIndex)++;
-        if ((*sineIndex) >= wavelength) (*sineIndex) = 0;
-    }
-}
