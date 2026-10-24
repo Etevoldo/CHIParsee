@@ -50,12 +50,12 @@ Regs init_regs()
 
 void FDE(Regs *regs, IO *io, Quirks quirks)
 {
-    // for short
-    u16 pc = regs->pc;
+    // dirty uneffective OOB checker
+    regs->pc = regs->pc & 0xFFF;
+    regs->index = regs->index & 0xFFF;
     // fetch
-
     // current instruction
-    u16 instruc = (regs->ram[pc] << 8) + regs->ram[pc + 1];
+    u16 instruc = (regs->ram[regs->pc] << 8) + regs->ram[regs->pc + 1];
     regs->pc += 2;
 
     // decode
