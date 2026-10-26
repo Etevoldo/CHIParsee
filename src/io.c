@@ -118,7 +118,7 @@ void load_font(u8 *ram)
     };
 
     for (size_t i = 0; i < (sizeof(big_font) / sizeof(big_font[0])); i++) {
-        ram[BIG_FONT_START + i] = font[i];
+        ram[BIG_FONT_START + i] = big_font[i];
     }
 }
 
