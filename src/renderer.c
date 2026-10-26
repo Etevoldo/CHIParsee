@@ -175,6 +175,11 @@ void draw_gui(const int gui_x, const int gui_y)
         "8xy6 & 8xye: increment by x",
         &quirks.is_memory_increment_by_x);
 
+    GuiCheckBox(
+        RECT(third_row_x, gui_y + 80, BOX_LEN, BOX_LEN),
+        "logical scrolling in lores",
+        &quirks.is_logical_scroll);
+
     if (file_dialog_state.windowActive) GuiLock();
     if (GuiButton(RECT(0, 0, 140, 30),
         GuiIconText(ICON_FILE_OPEN, "Open rom"))) {

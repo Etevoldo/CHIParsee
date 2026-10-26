@@ -154,6 +154,7 @@ Quirks map_platform_quirks(const char *platform)
         .is_jump = cJSON_IsTrue(jump),
         .is_vblank = cJSON_IsTrue(vblank),
         .is_logic = cJSON_IsTrue(logic),
+        .is_logical_scroll = true, // assumes modern superchip
         .ipf = cJSON_GetNumberValue(defaultTickrate_item)
     };
     // freeing memory
