@@ -70,6 +70,14 @@ int check_rom(const char *hash, Program_data *data_out)
         goto cleanup;
     }
 
+    cJSON *tickrate = cJSON_GetObjectItemCaseSensitive(rom, "tickrate");
+    if (cJSON_IsNumber(tickrate)) {
+        data_out->tickrate = cJSON_GetNumberValue(tickrate);
+    }
+    else {
+        data_out->tickrate = -1;
+    }
+
     cJSON_Delete(hashes);
     cJSON_Delete(programs);
 

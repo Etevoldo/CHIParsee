@@ -8,6 +8,7 @@ typedef struct {
     char *filename;
     char *description;
     char *platform;
+    int tickrate;
 } Program_data;
 
 // Takes the database info given a hash
