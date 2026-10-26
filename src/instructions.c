@@ -338,11 +338,15 @@ static void op_FX00(
         // big font load
         if ( 15 < regs->v[x_index] && regs->v[x_index] < 26) {
             int big_index = regs->v[x_index] - 15;
-            regs->index = BIG_FONT_START + (big_index * 8);
+            regs->index = BIG_FONT_START + (big_index * 10);
         }
         // regular font
         u16 last_nibble = regs->v[x_index] & 0x0F;
         regs->index = FONT_START + (last_nibble * 5);
+        break;
+    case 0x0030:
+        int big_index = regs->v[x_index];
+        regs->index = BIG_FONT_START + (big_index * 10);
         break;
     case 0x0033:
         u8 number = regs->v[x_index];
