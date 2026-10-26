@@ -4,6 +4,8 @@
 #include "io.h"
 
 static int map_key(int key);
+// copies values of display into copy, also clearing it
+static void buffer_clear_swap(bool display[], bool copy[]);
 
 IO init_io()
 {
@@ -127,6 +129,53 @@ void clear_display(bool display[])
             int index = x + y * DISPLAY_WIDTH;
             display[index] = false;
         }
+    }
+}
+
+void scroll_left(bool display[], int amount)
+{
+    bool copy[DISPLAY_HEIGHT * DISPLAY_WIDTH];
+    buffer_clear_swap(display, copy);
+    for (int y = 0; y < DISPLAY_HEIGHT; y++) {
+        for (int x = 0; x < DISPLAY_WIDTH; x++) {
+            if (x < amount) continue;
+            int index = x + y * DISPLAY_WIDTH;
+            display[index] = copy[index + amount];
+        }
+    }
+}
+
+void scroll_right(bool display[], int amount)
+{
+    bool copy[DISPLAY_HEIGHT * DISPLAY_WIDTH];
+    buffer_clear_swap(display, copy);
+    for (int y = 0; y < DISPLAY_HEIGHT; y++) {
+        for (int x = 0; x < DISPLAY_WIDTH; x++) {
+            if (x + amount >= DISPLAY_WIDTH) continue;
+            int index = x + y * DISPLAY_WIDTH;
+            display[index + amount] = copy[index];
+        }
+    }
+}
+
+void scroll_down(bool display[], int amount)
+{
+    bool copy[DISPLAY_HEIGHT * DISPLAY_WIDTH] = { 0 };
+    buffer_clear_swap(display, copy);
+    for (int y = 0; y < DISPLAY_HEIGHT; y++) {
+        for (int x = 0; x < DISPLAY_WIDTH; x++) {
+            if (y + amount >= DISPLAY_HEIGHT) continue; // could just end it
+            int index = x + y * DISPLAY_WIDTH;
+            display[index + amount * DISPLAY_WIDTH] = copy[index];
+        }
+    }
+}
+
+static void buffer_clear_swap(bool display[], bool copy[])
+{
+    for (int i = 0; i < DISPLAY_HEIGHT * DISPLAY_WIDTH; i++) {
+        copy[i] = display[i];
+        display[i] = false;
     }
 }
 

@@ -94,9 +94,19 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
             clear_display(io->display);
             regs->is_extended_mode = true;
         }
-        else if (y == 0xC) { //scroll
-            if (n == 0) exit(EXIT_SUCCESS);
-            // TODO SCROLL
+        else if ((instruc & 0x00F0) == 0x00C0) {
+            if (n == 0) exit(EXIT_SUCCESS); //scroll
+
+            if (regs->is_extended_mode) scroll_down(io->display, n);
+            else scroll_down(io->display, n * 2);
+        }
+        else if (other_types == 0x00FB) { //scroll right
+            if (regs->is_extended_mode) scroll_right(io->display, 4);
+            else scroll_right(io->display, 8);
+        }
+        else if (other_types == 0x00FC) { //scroll left
+            if (regs->is_extended_mode) scroll_left(io->display, 4);
+            else scroll_left(io->display, 8);
         }
         break;
     case 0x1000:

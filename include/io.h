@@ -9,3 +9,6 @@ int load_rom(u8 *ram, char *file_name);
 
 bool drawPixel(int x, int y, bool isBitOn, bool display[]);
 void clear_display(bool display[]);
+void scroll_down(bool display[], int amount);
+void scroll_left(bool display[], int amount);
+void scroll_right(bool display[], int amount);
