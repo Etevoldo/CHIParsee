@@ -83,10 +83,7 @@ int main(void)
                 SetWindowTitle(title);
                 Quirks quirks = map_platform_quirks(p_data.platform);
 
-                if (p_data.tickrate != -1) {
-                    quirks.ipf = p_data.tickrate;
-                    printf("tickrate: %d\n", p_data.tickrate);
-                }
+                if (p_data.tickrate != -1) quirks.ipf = p_data.tickrate;
                 gui_set_quirks(quirks);
 
             free_program_data(&p_data);
