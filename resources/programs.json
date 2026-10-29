@@ -5779,7 +5779,13 @@
       "08cff17fa88aaecb11dd439e2f9780f77831de02": {
         "file": "mrworm.ch8",
         "tickrate": 20,
-        "platforms": ["xochip"]
+        "platforms": [],
+        "quirkyPlatforms": {
+          "superchip": {
+            "shift": false,
+            "memoryLeaveIUnchanged": false
+          }
+        }
       }
     }
   },
