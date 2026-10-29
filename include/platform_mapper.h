@@ -9,6 +9,7 @@ typedef struct {
     char *description;
     char *platform;
     int tickrate;
+    Quirks quirks;
 } Program_data;
 
 // Takes the database info given a hash

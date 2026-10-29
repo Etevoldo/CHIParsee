@@ -69,17 +69,59 @@ int check_rom(const char *hash, Program_data *data_out)
     cJSON *platforms = cJSON_GetObjectItemCaseSensitive(rom, "platforms");
     // getting only the first for simplicity
     cJSON *platform_item = cJSON_GetArrayItem(platforms, 0);
-    char *platform = cJSON_GetStringValue(platform_item);
-    if (str_alloc_cpy(&data_out->platform, platform) == 1) {
-        goto cleanup;
+    if (platform_item) {
+        char *platform = cJSON_GetStringValue(platform_item);
+        if (str_alloc_cpy(&data_out->platform, platform) == 1) {
+            goto cleanup;
+        }
+        data_out->quirks = map_platform_quirks(platform);
+    }
+    else { // quirkyPlatforms
+        platforms = 
+            cJSON_GetObjectItemCaseSensitive(rom, "quirkyPlatforms");
+        platform_item = platforms->child;
+        if (str_alloc_cpy(&data_out->platform, platform_item->string) == 1) {
+            goto cleanup;
+        }
+        data_out->quirks = map_platform_quirks(platform_item->string);
+
+        cJSON *shift
+            = cJSON_GetObjectItemCaseSensitive(platform_item, "shift");
+        if (shift) data_out->quirks.is_shift = cJSON_IsTrue(shift);
+
+        cJSON *memoryIncrementByX = cJSON_GetObjectItemCaseSensitive(
+            platform_item, "memoryIncrementByX");
+        if (memoryIncrementByX) {
+            data_out->quirks.is_memory_increment_by_x 
+                = cJSON_IsTrue(memoryIncrementByX);
+        }
+
+        cJSON *memoryLeaveIUnchanged = cJSON_GetObjectItemCaseSensitive(
+            platform_item, "memoryLeaveIUnchanged");
+        if (memoryLeaveIUnchanged) {
+            data_out->quirks.is_memory_leave_i_unchanged 
+                = cJSON_IsTrue(memoryLeaveIUnchanged);
+        }
+
+        cJSON *wrap = cJSON_GetObjectItemCaseSensitive(platform_item, "wrap");
+        if (wrap) { data_out->quirks.is_wrap = cJSON_IsTrue(wrap); }
+
+        cJSON *jump = cJSON_GetObjectItemCaseSensitive(platform_item, "jump");
+        if (jump) { data_out->quirks.is_jump = cJSON_IsTrue(jump); }
+
+        cJSON *vblank = cJSON_GetObjectItemCaseSensitive(
+            platform_item, "vblank");
+        if (vblank) { data_out->quirks.is_vblank = cJSON_IsTrue(vblank); }
+
+        cJSON *logic = cJSON_GetObjectItemCaseSensitive(
+            platform_item, "logic");
+        if (logic) { data_out->quirks.is_logic = cJSON_IsTrue(logic); }
     }
 
     cJSON *tickrate = cJSON_GetObjectItemCaseSensitive(rom, "tickrate");
     if (cJSON_IsNumber(tickrate)) {
-        data_out->tickrate = cJSON_GetNumberValue(tickrate);
-    }
-    else {
-        data_out->tickrate = -1;
+        // overwrite ipf in case exists
+        data_out->quirks.ipf = cJSON_GetNumberValue(tickrate);
     }
 
     cJSON_Delete(hashes);
