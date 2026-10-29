@@ -9,7 +9,8 @@
 // op_DXYN helper function
 static void draw_byte(
     Regs *regs, bool display[], u8 byte, u8 x, u8 y, int width_cap);
-static void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[]);
+static void op_DXYN(
+    u8 x_index, u8 y_index, int n, Regs *regs, bool display[], Quirks quirks);
 
 static void op_8000(u8 x_index, u8 y_index, int logical_type,
     Regs *regs, Quirks quirks);
@@ -166,7 +167,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         break;
     case 0xD000:
         if (!regs->is_extended_mode) io->display_wait = true;
-        op_DXYN(x, y, n, regs, io->display);
+        op_DXYN(x, y, n, regs, io->display, quirks);
         break;
     case 0xE000:
         int key_to_check;
@@ -190,7 +191,8 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
     }
 }
 
-static void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
+static void op_DXYN(
+    u8 x_index, u8 y_index, int n, Regs *regs, bool display[], Quirks quirks)
 {
     if (n == 0) n = 16; // DXY0
     const u16 spriteIndex = regs->index;
@@ -212,7 +214,8 @@ static void op_DXYN(u8 x_index, u8 y_index, int n, Regs *regs, bool display[])
     for (int row = 0; row < n; row++) {
         x = xAnchor;
         int byte;
-        if ((n == 16) && regs->is_extended_mode) {
+        // logical scroll is true modern superchip, and it always draw 16x16
+        if ((n == 16) && (regs->is_extended_mode || quirks.is_logical_scroll)) {
             byte = regs->ram[spriteIndex + row*2];
             draw_byte(regs, display, byte, x, y, width_cap);
             byte = regs->ram[spriteIndex + row*2 + 1];
