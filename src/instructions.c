@@ -3,7 +3,7 @@
 
 #include "renderer.h"
 #include "instructions.h"
-#include "io.h"
+#include "input_and_display.h"
 #include "stack.h"
 
 // op_DXYN helper function

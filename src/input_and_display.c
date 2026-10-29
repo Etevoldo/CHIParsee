@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "raylib.h"
 #include "types.h"
-#include "io.h"
+#include "input_and_display.h"
 
 static int map_key(int key);
 // copies values of display into copy, also clearing it

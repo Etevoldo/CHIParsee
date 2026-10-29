@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <math.h>
 
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
@@ -10,12 +9,10 @@
 #include "gui_window_file_dialog.h"
 #undef GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
 #include "types.h"
-#include "stack.h"
-#include "list.h"
 #include "renderer.h"
 #include "instructions.h"
 #include "audio.h"
-#include "io.h"
+#include "input_and_display.h"
 #include "style_amber.h"
 #include "platform_mapper.h"
 
