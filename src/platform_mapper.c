@@ -20,6 +20,10 @@ int str_alloc_cpy(char **dest, const char *src)
 
 int check_rom(const char *hash, Program_data *data_out)
 {
+    data_out->description = NULL;
+    data_out->filename = NULL;
+    data_out->platform = NULL;
+
     char *hashes_str = LoadFileText("resources/sha1-hashes.json");
     char *programs_str = LoadFileText("resources/programs.json");
 
@@ -38,13 +42,20 @@ int check_rom(const char *hash, Program_data *data_out)
     if (!cJSON_IsArray(programs)) {
         goto cleanup;
     }
-    cJSON *title_item;
-    if ((title_item = cJSON_GetArrayItem(programs, index)) == NULL) {
+    cJSON *program;
+    if ((program = cJSON_GetArrayItem(programs, index)) == NULL) {
+        goto cleanup;
+    }
+
+    cJSON *title_name
+        = cJSON_GetObjectItemCaseSensitive(program, "title");
+    char *title = cJSON_GetStringValue(title_name);
+    if (str_alloc_cpy(&data_out->filename, title) == 1) {
         goto cleanup;
     }
 
     cJSON *desc_item
-        = cJSON_GetObjectItemCaseSensitive(title_item, "description");
+        = cJSON_GetObjectItemCaseSensitive(program, "description");
     // Description might not be there
     if (cJSON_IsString(desc_item)) {
         const char *description = cJSON_GetStringValue(desc_item);
@@ -55,16 +66,8 @@ int check_rom(const char *hash, Program_data *data_out)
     //CONSIDER: allocate something like "No Description" or "-"
     else data_out->description = NULL; 
 
-    cJSON *roms = cJSON_GetObjectItemCaseSensitive(title_item, "roms");
+    cJSON *roms = cJSON_GetObjectItemCaseSensitive(program, "roms");
     cJSON *rom = cJSON_GetObjectItemCaseSensitive(roms, hash);
-
-    cJSON *rom_filename
-        = cJSON_GetObjectItemCaseSensitive(rom, "file");
-
-    char *filename = cJSON_GetStringValue(rom_filename);
-    if (str_alloc_cpy(&data_out->filename, filename) == 1) {
-        goto cleanup;
-    }
 
     cJSON *quirkyPlatforms
         = cJSON_GetObjectItemCaseSensitive(rom, "quirkyPlatforms");
