@@ -86,7 +86,7 @@ int main(void)
                 if (p_data.tickrate != -1) quirks.ipf = p_data.tickrate;
                 gui_set_quirks(quirks);
 
-            free_program_data(&p_data);
+                free_program_data(&p_data);
             }
 
             regs = init_regs();
