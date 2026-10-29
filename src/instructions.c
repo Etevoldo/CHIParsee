@@ -1,4 +1,3 @@
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -49,11 +48,18 @@ Regs init_regs()
     return regs;
 }
 
+char myRand()
+{
+    static uint32_t state = 777;
+    state = state * 1664525 + 1013904223;
+    return state >> 24;
+}
+
 void FDE(Regs *regs, IO *io, Quirks quirks)
 {
     // dirty uneffective OOB checker
-    regs->pc = regs->pc & 0xFFF;
-    regs->index = regs->index & 0xFFF;
+    regs->pc &= 0xFFF;
+    regs->index &= 0xFFF;
     // fetch
     // current instruction
     u16 instruc = (regs->ram[regs->pc] << 8) + regs->ram[regs->pc + 1];
@@ -152,8 +158,11 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         else regs->pc = regs->v[0x0] + nnn;
         break;
     case 0xC000:
-        srand((unsigned) time(NULL));
-        regs->v[x] = rand() & kk;
+        static unsigned int seed = 0xFDCBA937;
+        regs->v[x] = (myRand() + seed) & kk;
+        if ((seed % 3) == 0) seed += 5;
+        if ((seed % 7) == 0) seed += 17;
+        else seed -= 21;
         break;
     case 0xD000:
         if (!regs->is_extended_mode) io->display_wait = true;
@@ -176,7 +185,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         op_FX00(x, other_types, regs, io, quirks);
         break;
     default:
-        printf("Unknown/Unimplemented instruction: %04X", instruc);
+        printf("Unknown/Unimplemented instruction: %04X\n", instruc);
         break;
     }
 }
@@ -398,8 +407,8 @@ static void op_FX00(
         }
         break;
     default:
-        printf("Unknown/Unimplemented instruction: F%01X%02X",
-            x_index, other_type);
+        const u16 instruc = (regs->ram[regs->pc] << 8) + regs->ram[regs->pc + 1];
+        printf("Unknown/Unimplemented instruction: %04X\n", instruc);
         break;
     }
 }
