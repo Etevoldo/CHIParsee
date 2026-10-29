@@ -78,13 +78,19 @@ int main(void)
                     p_data.platform
                 );
                 SetWindowTitle(title);
-                Quirks quirks = map_platform_quirks(p_data.platform);
-
-                if (p_data.tickrate != -1) quirks.ipf = p_data.tickrate;
-                gui_set_quirks(quirks);
-
-                free_program_data(&p_data);
+                gui_set_quirks(p_data.quirks);
             }
+            else {
+                sprintf_s(
+                    title,
+                    512,
+                    "CHIParsee: Running \"%s\" with \"Default\" configuration",
+                    gui_get_file_name()
+                );
+                SetWindowTitle(title);
+                gui_set_quirks(init_quirks());
+            }
+            free_program_data(&p_data);
 
             regs = init_regs();
             io = init_io();
