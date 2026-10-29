@@ -66,20 +66,12 @@ int check_rom(const char *hash, Program_data *data_out)
         goto cleanup;
     }
 
-    cJSON *platforms = cJSON_GetObjectItemCaseSensitive(rom, "platforms");
-    // getting only the first for simplicity
-    cJSON *platform_item = cJSON_GetArrayItem(platforms, 0);
-    if (platform_item) {
-        char *platform = cJSON_GetStringValue(platform_item);
-        if (str_alloc_cpy(&data_out->platform, platform) == 1) {
-            goto cleanup;
-        }
-        data_out->quirks = map_platform_quirks(platform);
-    }
-    else { // quirkyPlatforms
-        platforms = 
-            cJSON_GetObjectItemCaseSensitive(rom, "quirkyPlatforms");
-        platform_item = platforms->child;
+    cJSON *quirkyPlatforms
+        = cJSON_GetObjectItemCaseSensitive(rom, "quirkyPlatforms");
+    //prioritize using quirkyPlatforms
+    if (quirkyPlatforms) {
+        // getting only the first for simplicity
+        cJSON *platform_item = quirkyPlatforms->child;
         if (str_alloc_cpy(&data_out->platform, platform_item->string) == 1) {
             goto cleanup;
         }
@@ -116,6 +108,16 @@ int check_rom(const char *hash, Program_data *data_out)
         cJSON *logic = cJSON_GetObjectItemCaseSensitive(
             platform_item, "logic");
         if (logic) { data_out->quirks.is_logic = cJSON_IsTrue(logic); }
+    }
+    else { // regular platforms list
+        cJSON *platforms = cJSON_GetObjectItemCaseSensitive(rom, "platforms");
+        // get first for simplicity, as it's the preferable one
+        cJSON *platform_item = cJSON_GetArrayItem(platforms, 0);
+        char *platform = cJSON_GetStringValue(platform_item);
+        if (str_alloc_cpy(&data_out->platform, platform) == 1) {
+            goto cleanup;
+        }
+        data_out->quirks = map_platform_quirks(platform);
     }
 
     cJSON *tickrate = cJSON_GetObjectItemCaseSensitive(rom, "tickrate");
