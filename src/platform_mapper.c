@@ -43,13 +43,17 @@ int check_rom(const char *hash, Program_data *data_out)
         goto cleanup;
     }
 
-    cJSON *desc
+    cJSON *desc_item
         = cJSON_GetObjectItemCaseSensitive(title_item, "description");
-    char *description = cJSON_GetStringValue(desc);
-
-    if (str_alloc_cpy(&data_out->description, description) == 1) {
-        goto cleanup;
+    // Description might not be there
+    if (cJSON_IsString(desc_item)) {
+        const char *description = cJSON_GetStringValue(desc_item);
+        if (str_alloc_cpy(&data_out->description, description) == 1) {
+            goto cleanup;
+        }
     }
+    //CONSIDER: allocate something like "No Description" or "-"
+    else data_out->description = NULL; 
 
     cJSON *roms = cJSON_GetObjectItemCaseSensitive(title_item, "roms");
     cJSON *rom = cJSON_GetObjectItemCaseSensitive(roms, hash);
