@@ -8,7 +8,8 @@ LIBRARY_PATH := "lib"
 BUILD_DIR := ./build
 SRC_DIR := ./src
 DEBUG := -g -DDEBUG
-FLAGS := -Wall -Wextra -O0
+FLAGS := -O0 -std=c99
+WARNS := -Wall -Wextra -Wno-unused-function -Wno-unused-parameter
 
 # find all *.c in src_dir
 SRCS_PATH = ${shell find ${SRC_DIR} -name "*.c"}
@@ -18,13 +19,13 @@ OBJS_PATH = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS_PATH})
 
 # build everything in the OBJS_PATH
 main: ${OBJS_PATH}
-	gcc $^ ${FLAGS} ${DEBUG} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
+	gcc $^ ${DEBUG} ${FLAGS} ${WARNS} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
 
 # expands into
 # build/<stem>.o: <stem>.c
 # for each respective object file
 ${OBJS_PATH}: ${BUILD_DIR}/%.o: ${SRC_DIR}/%.c
-	gcc $^ -c ${DEBUG} ${FLAGS} -I${INCLUDE_PATH} -o $@
+	gcc $^ -c ${DEBUG} ${FLAGS} ${WARNS} -I${INCLUDE_PATH} -o $@
 
 .PHONY: clean
 clean:
