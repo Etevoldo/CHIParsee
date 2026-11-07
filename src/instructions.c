@@ -1,7 +1,7 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "renderer.h"
+#include <string.h>
 #include "instructions.h"
 #include "input_and_display.h"
 #include "stack.h"
@@ -33,18 +33,23 @@ Quirks init_quirks()
     };
 }
 
-Regs init_regs()
+Regs init_regs(bool isXO)
 {
     Regs regs = (Regs) {
         .v = { 0 },
         .index = 0,
         .delay = 0,
         .sound = 0,
-        .ram = { 0 },
         .stack = (Stack) {0, { 0 }},
         .pc = PC_START,
         .is_extended_mode = false
     };
+    int ram_lenght = isXO ? XO_RAM_SIZE : RAM_SIZE;
+    regs.ram = (u8 *) malloc(sizeof(u8) * ram_lenght);
+    if (regs.ram == NULL) {
+        perror("Couldn't mallot the array");
+    }
+    memset(regs.ram, 0, ram_lenght);
     load_font(regs.ram);
     return regs;
 }

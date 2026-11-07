@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "raylib.h"
-#include "list.h"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -16,9 +15,10 @@ typedef struct {
 #define DISPLAY_HEIGHT 64
 #define SCALE 7
 #define PC_START 0x200
-#define FONT_START 0x0000
-#define BIG_FONT_START 0x0050
+#define FONT_START 0x0050
+#define BIG_FONT_START 0x0100
 #define RAM_SIZE 4096
+#define XO_RAM_SIZE 65536
 #define V_QTY 16
 #define N_OF_KEYS 16
 #define NO_KEY 16
@@ -30,7 +30,7 @@ typedef struct {
     u16   index;
     u8    delay;
     u8    sound;
-    u8    ram[RAM_SIZE];
+    u8    *ram;
     Stack stack;
     u16   pc;
     bool  is_extended_mode;
