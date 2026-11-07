@@ -5,6 +5,7 @@
 #include "instructions.h"
 #include "raylib.h"
 #include "types.h"
+#include "list.h"
 
 #include "raygui.h"
 #include "gui_window_file_dialog.h"
@@ -209,10 +210,7 @@ char ** alloc_debugger_inst_array()
 void load_debugger_inst_array(u8 *ram)
 {
     for (int j = 0, i = 0; i < INST_TO_DISPLAY; j += 2, i++) {
-        sprintf(
-            inst_list[i],
-            "%.4X: %.2X%.2X\n",
-            j, ram[j], ram[j + 1]);
+        sprintf(inst_list[i], "%.4X: %.2X%.2X\n", j, ram[j], ram[j + 1]);
     }
 }
 
@@ -447,3 +445,4 @@ void gui_unload()
     #endif
     list_dealloc(&bp_list);
 }
+
