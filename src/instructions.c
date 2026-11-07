@@ -6,6 +6,7 @@
 #include "input_and_display.h"
 #include "stack.h"
 
+static char myRand(void);
 // op_DXYN helper function
 static void draw_byte(
     Regs *regs, bool display[], u8 byte, u8 x, u8 y, int width_cap);
@@ -19,7 +20,7 @@ static void op_FX00(u8 x_index, int other_type,
     Regs *regs, IO *io, Quirks quirks);
 
 // init default values for quirks
-Quirks init_quirks()
+Quirks init_quirks(void)
 {
     return (Quirks) {
         .is_shift = false,
@@ -54,7 +55,7 @@ Regs init_regs(bool isXO)
     return regs;
 }
 
-char myRand()
+static char myRand(void)
 {
     static uint32_t state = 777;
     state = state * 1664525 + 1013904223;
@@ -88,7 +89,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
     // execute
     switch (type) {
     case 0x0000:
-        // TODO 
+        // TODO
         if (other_types == 0x0E0) {
             clear_display(io->display);
         }
@@ -163,7 +164,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         if (quirks.is_jump) { regs->pc = regs->v[n] + kk; }
         else regs->pc = regs->v[0x0] + nnn;
         break;
-    case 0xC000:
+    case 0xC000:;
         static unsigned int seed = 0xFDCBA937;
         regs->v[x] = (myRand() + seed) & kk;
         if ((seed % 3) == 0) seed += 5;
@@ -174,7 +175,7 @@ void FDE(Regs *regs, IO *io, Quirks quirks)
         if (!regs->is_extended_mode) io->display_wait = true;
         op_DXYN(x, y, n, regs, io->display, quirks);
         break;
-    case 0xE000:
+    case 0xE000:;
         int key_to_check;
         if (other_types == 0x009E) {
             key_to_check = regs->v[x] & 0x000F;
@@ -238,7 +239,7 @@ static void op_DXYN(
 static void draw_byte(
     Regs *regs, bool display[], u8 byte, u8 x, u8 y, int width_cap)
 {
-    int mask = 0b10000000; // no digit separator in C :(
+    int mask = B1000_0000;
     for (int bitN = 0; bitN < 8; bitN++) {
         bool isBitOn = byte & mask;
 
@@ -301,13 +302,13 @@ static void op_8000(
         break;
     case 0x0006:
         if (!quirks.is_shift) { v[x_index] = v[y_index]; }
-        shifted_bit = v[x_index] & 0b00000001;
+        shifted_bit = v[x_index] & 1;
 
         v[x_index] = v[x_index] >> 1;
 
         v[0xF] = (shifted_bit == 1) ? 1 : 0;
         break;
-    case 0x0007:
+    case 0x0007:;
         int sub = v[y_index] - v[x_index];
         v[x_index] = v[y_index] - v[x_index];
 
@@ -315,7 +316,7 @@ static void op_8000(
         break;
     case 0x000E:
         if (!quirks.is_shift) { v[x_index] = v[y_index]; }
-        int shifted_bit = (v[x_index] & 0b10000000) >> 7;
+        int shifted_bit = (v[x_index] & B0000_0001) >> 7;
 
         v[x_index] = v[x_index] << 1;
 
@@ -361,11 +362,11 @@ static void op_FX00(
         u16 last_nibble = regs->v[x_index] & 0x0F;
         regs->index = FONT_START + (last_nibble * 5);
         break;
-    case 0x0030:
+    case 0x0030:;
         int big_index = regs->v[x_index];
         regs->index = BIG_FONT_START + (big_index * 10);
         break;
-    case 0x0033:
+    case 0x0033:;
         u8 number = regs->v[x_index];
         u8 digits[3] = { 0 };
 
@@ -414,7 +415,7 @@ static void op_FX00(
             regs->v[i] = storage[i];
         }
         break;
-    default:
+    default:;
         const u16 instruc = (regs->ram[regs->pc] << 8) + regs->ram[regs->pc + 1];
         printf("Unknown/Unimplemented instruction: %04X\n", instruc);
         break;
