@@ -5,6 +5,7 @@
 -Iinclude
 -Ilib
 -g
+-pedantic
 -DDEBUG
 -O0
 -std=c99

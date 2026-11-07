@@ -8,7 +8,7 @@ LIBRARY_PATH := "lib"
 BUILD_DIR := ./build
 SRC_DIR := ./src
 DEBUG := -g -DDEBUG
-FLAGS := -O0 -std=c99
+FLAGS := -O0 -std=c99 -pedantic
 WARNS := -Wall -Wextra -Wno-unused-function -Wno-unused-parameter
 
 # find all *.c in src_dir
