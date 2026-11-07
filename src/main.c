@@ -17,13 +17,14 @@
 #include "platform_mapper.h"
 
 bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data);
-void close_services(AudioStream stream,
+void init_emu(IO *io, Regs *regs, AudioStream *stream, Audio_data audio_data);
+void close_services(
+    AudioStream stream,
     Image screen_image,
     Texture screen_texture);
 
 int main(void)
 {
-    char title[512] = "CHIParsee";
     #ifdef DEBUG
     InitWindow(
         DISPLAY_WIDTH * SCALE + 510,
@@ -42,7 +43,6 @@ int main(void)
     init_gui();
     AudioStream stream = init_audio();
     Audio_data audio_data = init_audio_vars(stream);
-
     load_font(regs.ram);
     const int frame_time = 17; // amount of time between frames in miliseconds
 
@@ -132,6 +132,52 @@ void close_services(
     UnloadImage(screen_image);
     UnloadAudioStream(stream);
     CloseWindow();
+}
+
+void init_emu(IO *io, Regs *regs, AudioStream *stream, Audio_data audio_data)
+{
+    char title[512] = "CHIParsee";
+    UnloadTexture(io->screen_texture);
+    UnloadImage(io->screen_image);
+
+    char hash[SHA1_STR_SIZE];
+    file_checksum(gui_get_file_name(), hash);
+    Program_data p_data;
+    if (!check_rom(hash, &p_data)) {
+        sprintf_s(
+            title,
+            512,
+            "CHIParsee: Running \"%s\" with \"%s\" configuration",
+            p_data.filename,
+            p_data.platform
+        );
+        SetWindowTitle(title);
+        gui_set_quirks(p_data.quirks);
+    }
+    else {
+        sprintf_s(
+            title,
+            512,
+            "CHIParsee: Running \"%s\" with \"Default\" configuration",
+            gui_get_file_name()
+        );
+        SetWindowTitle(title);
+        gui_set_quirks(init_quirks());
+    }
+    free_program_data(&p_data);
+
+    *regs = init_regs();
+    *io = init_io();
+    if (load_rom(regs->ram, gui_get_file_name())) {
+        gui_set_file_dropped(false);
+    }
+    load_font(regs->ram);
+
+    gui_set_file_dropped(false);
+
+    #ifdef DEBUG
+    load_debugger_inst_array(regs->ram);
+    #endif
 }
 
 bool main_cycle(IO *io, Regs *regs, Audio_data *audio_data)
