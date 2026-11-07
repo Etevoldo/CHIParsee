@@ -1,6 +1,7 @@
 #include "platform_mapper.h"
 #include "cJSON.h"
 #include "raylib.h"
+#include <stdio.h>
 #define TEENY_SHA1_IMPLEMENTATION
 #include "teenysha1.h"
 
@@ -41,9 +42,11 @@ int check_rom(const char *hash, Program_data *data_out)
 
     if (!cJSON_IsArray(programs)) {
         goto cleanup;
+        perror("programs.json is not an array, check if it is valid JSON");
     }
     cJSON *program;
     if ((program = cJSON_GetArrayItem(programs, index)) == NULL) {
+        perror("Mismatch between sha1-hashes.json and program.json");
         goto cleanup;
     }
 
@@ -64,7 +67,7 @@ int check_rom(const char *hash, Program_data *data_out)
         }
     }
     //CONSIDER: allocate something like "No Description" or "-"
-    else data_out->description = NULL; 
+    else data_out->description = NULL;
 
     cJSON *roms = cJSON_GetObjectItemCaseSensitive(program, "roms");
     cJSON *rom = cJSON_GetObjectItemCaseSensitive(roms, hash);
