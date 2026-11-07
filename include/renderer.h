@@ -7,7 +7,7 @@ void init_gui();
 
 // Draw regular screen gui
 void draw(IO *io, Regs *regs); 
-// Draw debug gui
+// Draw gui
 void draw_gui(const int gui_x, const int gui_y);
 // Draw debug gui
 void draw_debug(Regs *regs, bool keys_down[]);
@@ -34,3 +34,4 @@ bool gui_is_file_dropped();
 void gui_set_file_dropped(bool value);
 
 void gui_unload();
+

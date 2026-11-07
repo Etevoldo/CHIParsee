@@ -1,4 +1,5 @@
 #include "audio.h"
+#include "math.h"
 
 AudioStream init_audio()
 {
