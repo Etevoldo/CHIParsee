@@ -37,6 +37,7 @@ int main(void)
         DISPLAY_HEIGHT * SCALE + 200,
         title);
     #endif
+    SetTargetFPS(60);
     GuiLoadStyleAmber();
 
     Regs regs = init_regs(false);
@@ -44,7 +45,7 @@ int main(void)
     init_gui();
     AudioStream stream = init_audio();
     Audio_data audio_data = init_audio_vars(stream);
-    const int frame_time = 17; // amount of time between frames in miliseconds
+    // const int frame_time = 17; // amount of time between frames in miliseconds
 
     // Insert ROM gui pre-loop
     while (true) {
@@ -54,7 +55,7 @@ int main(void)
 
         load_debugger_inst_array(regs.ram);
         draw(&io, &regs);
-        usleep(frame_time * 1000);
+        // usleep(frame_time * 1000);
 
         if (WindowShouldClose()) {
             close_services(stream, io.screen_image, io.screen_texture);
@@ -74,7 +75,7 @@ int main(void)
         audio_data.frequency = (int) gui_get_freq();
         audio_data.volume = gui_get_volume();
 
-        usleep(frame_time * 1000);
+        // usleep(frame_time * 1000);
     }
 
     gui_unload();
