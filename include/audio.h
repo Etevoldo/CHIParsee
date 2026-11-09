@@ -5,6 +5,6 @@
 #define SAMPLE_RATE 44100
 #define BUFFER_SIZE 4096
 
-AudioStream init_audio();
+AudioStream init_audio(void);
 void sample_audio_buffer(Audio_data *audio);
 Audio_data init_audio_vars(AudioStream stream);

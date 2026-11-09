@@ -1,7 +1,7 @@
 #pragma once
 #include "types.h"
 
-IO init_io();
+IO init_io(void);
 void handle_input(bool *keys_down, int *last_key_pressed);
 void load_font(u8 *ram);
 int load_rom(u8 *ram, char *file_name);

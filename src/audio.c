@@ -1,7 +1,7 @@
 #include "audio.h"
 #include "math.h"
 
-AudioStream init_audio()
+AudioStream init_audio(void)
 {
     // initializing Audio
     InitAudioDevice();

@@ -7,7 +7,7 @@ static int map_key(int key);
 // copies values of display into copy, also clearing it
 static void buffer_clear_swap(bool display[], bool copy[]);
 
-IO init_io()
+IO init_io(void)
 {
     IO io = (IO) {
         .display = { false },

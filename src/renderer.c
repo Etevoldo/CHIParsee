@@ -94,7 +94,7 @@ void draw(IO *io, Regs *regs)
     EndDrawing();
 }
 
-void init_gui()
+void init_gui(void)
 {
     inst_active = RAM_SIZE / 4;
     inst_focus = -1;
@@ -190,7 +190,7 @@ void draw_gui(const int gui_x, const int gui_y)
     GuiWindowFileDialog(&file_dialog_state);
 }
 
-char ** alloc_debugger_inst_array()
+char ** alloc_debugger_inst_array(void)
 {
     char **inst_list;
     inst_list = (char **) malloc(INST_TO_DISPLAY * sizeof(char **));
@@ -215,7 +215,7 @@ void load_debugger_inst_array(u8 *ram)
 }
 
 // free debug instructions string list
-void free_debugger_inst_array()
+void free_debugger_inst_array(void)
 {
     for (int i = 0; i < INST_TO_DISPLAY; i++) {
         free(inst_list[i]);
@@ -378,12 +378,12 @@ bool gui_bp_contains(u16 address)
     return list_contains(&bp_list, address);
 }
 
-int gui_get_ipf()
+int gui_get_ipf(void)
 {
     return (int)quirks.ipf;
 }
 
-bool gui_is_paused()
+bool gui_is_paused(void)
 {
     return is_paused;
 }
@@ -393,7 +393,7 @@ void gui_set_pause(bool value)
     is_paused = value;
 }
 
-bool gui_is_step()
+bool gui_is_step(void)
 {
     return is_step;
 }
@@ -403,17 +403,17 @@ void gui_set_step(bool value)
     is_step = value;
 }
 
-float gui_get_volume()
+float gui_get_volume(void)
 {
     return audio_volume;
 }
 
-float gui_get_freq()
+float gui_get_freq(void)
 {
     return audio_freq_slider;
 }
 
-Quirks gui_get_quirks()
+Quirks gui_get_quirks(void)
 {
     return quirks;
 }
@@ -423,12 +423,12 @@ void gui_set_quirks(Quirks value)
     quirks = value;
 }
 
-char * gui_get_file_name()
+char * gui_get_file_name(void)
 {
     return file_name_to_read;
 }
 
-bool gui_is_file_dropped()
+bool gui_is_file_dropped(void)
 {
     return is_file_selected;
 }
@@ -438,7 +438,7 @@ void gui_set_file_dropped(bool value)
     is_file_selected = value;
 }
 
-void gui_unload()
+void gui_unload(void)
 {
     #ifdef DEBUG
     free_debugger_inst_array();

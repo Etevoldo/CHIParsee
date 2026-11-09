@@ -3,35 +3,35 @@
 
 #define INST_TO_DISPLAY RAM_SIZE / 2
 
-void init_gui();
+void init_gui(void);
 
 // Draw regular screen gui
-void draw(IO *io, Regs *regs); 
+void draw(IO *io, Regs *regs);
 // Draw gui
 void draw_gui(const int gui_x, const int gui_y);
 // Draw debug gui
 void draw_debug(Regs *regs, bool keys_down[]);
 
-char ** alloc_debugger_inst_array();
+char ** alloc_debugger_inst_array(void);
 void load_debugger_inst_array(u8 *ram);
-void free_debugger_inst_array();
+void free_debugger_inst_array(void);
 
 void update_scroll(u16 pc);
 
 bool gui_bp_contains(u16 address);
-int gui_get_ipf();
-bool gui_is_paused();
+int gui_get_ipf(void);
+bool gui_is_paused(void);
 void gui_set_pause(bool value);
-bool gui_is_step();
+bool gui_is_step(void);
 void gui_set_step(bool value);
-float gui_get_volume();
-float gui_get_freq();
-Quirks gui_get_quirks();
+float gui_get_volume(void);
+float gui_get_freq(void);
+Quirks gui_get_quirks(void);
 void gui_set_quirks(Quirks value);
-char * gui_get_file_name();
-void gui_set_file_name();
-bool gui_is_file_dropped();
+char * gui_get_file_name(void);
+void gui_set_file_name(void);
+bool gui_is_file_dropped(void);
 void gui_set_file_dropped(bool value);
 
-void gui_unload();
+void gui_unload(void);
 
