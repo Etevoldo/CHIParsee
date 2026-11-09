@@ -13,7 +13,7 @@ int str_alloc_cpy(char **dest, const char *src)
     if (*dest == NULL) {
         return 1;
     }
-    if (memcpy_s(*dest, length, src, length)) {
+    if (!memcpy(*dest, src, length)) {
         return 1;
     }
     return 0;

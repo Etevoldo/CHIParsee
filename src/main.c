@@ -107,9 +107,8 @@ void init_emu(IO *io, Regs *regs, AudioStream *stream, Audio_data *audio_data)
     file_checksum(gui_get_file_name(), hash);
     Program_data p_data;
     if (!check_rom(hash, &p_data)) {
-        sprintf_s(
+        sprintf(
             title,
-            512,
             "CHIParsee: Running \"%s\" with \"%s\" configuration",
             p_data.filename,
             p_data.platform
@@ -119,9 +118,8 @@ void init_emu(IO *io, Regs *regs, AudioStream *stream, Audio_data *audio_data)
     }
     else {
         p_data.platform = "Default";
-        sprintf_s(
+        sprintf(
             title,
-            512,
             "CHIParsee: Running \"%s\" with \"Default\" configuration",
             gui_get_file_name()
         );
