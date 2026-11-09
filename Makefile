@@ -3,6 +3,9 @@
 # them all to the 'main' executable.
 
 LINKER_FLAGS := -lopengl32 -lraylib -lgdi32 -lwinmm
+# TODO: Autodect OS
+# Linux -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+# Windows: -lopengl32 -lraylib -lgdi32 -lwinmm
 INCLUDE_PATH := "include"
 LIBRARY_PATH := "lib"
 BUILD_DIR := ./build
