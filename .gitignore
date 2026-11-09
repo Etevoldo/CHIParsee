@@ -3,6 +3,7 @@ build/*
 
 #executable
 *.exe
+main
 
 # lessons from intro-course used for reference
 lessons
