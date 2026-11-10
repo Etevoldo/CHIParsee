@@ -1,11 +1,15 @@
+# Detect Windows or Linux
+ifeq '$(findstring ;,$(PATH))' ';' # semicolons on path
+	LINKER_FLAGS := -lopengl32 -lraylib -lgdi32 -lwinmm
+else
+	LINKER_FLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+endif
+# ...Realistic is detects if it's Windows or non-Windows, but should work
+
 # Quick summary: gets all '.c' files from the current directory
 # compiles them and sends them to the 'build' directory, and links
 # them all to the 'main' executable.
-
-LINKER_FLAGS := -lopengl32 -lraylib -lgdi32 -lwinmm
-# TODO: Autodect OS
-# Linux -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-# Windows: -lopengl32 -lraylib -lgdi32 -lwinmm
+CC := gcc
 INCLUDE_PATH := "include"
 LIBRARY_PATH := "lib"
 BUILD_DIR := ./build
@@ -22,13 +26,13 @@ OBJS_PATH = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS_PATH})
 
 # build everything in the OBJS_PATH
 main: ${OBJS_PATH}
-	gcc $^ ${DEBUG} ${FLAGS} ${WARNS} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
+	${CC} $^ ${DEBUG} ${FLAGS} ${WARNS} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
 
 # expands into
 # build/<stem>.o: <stem>.c
 # for each respective object file
 ${OBJS_PATH}: ${BUILD_DIR}/%.o: ${SRC_DIR}/%.c
-	gcc $^ -c ${DEBUG} ${FLAGS} ${WARNS} -I${INCLUDE_PATH} -o $@
+	${CC} $^ -c ${DEBUG} ${FLAGS} ${WARNS} -I${INCLUDE_PATH} -o $@
 
 .PHONY: clean
 clean:

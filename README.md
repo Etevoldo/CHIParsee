@@ -10,17 +10,36 @@ Written with C with help of [raylib](https://github.com/raysan5/raylib) as windo
  - Sorta of a debugger, compile with -DDEBUG (default) to have a view of the ram and step through the instructions, you can add breakpoints in the upper left text box
  - Automatic plataform configuration, you most probably won't need to mess arround with the configuring quirks thanks to the CHIP-8 database.
 
-# How to run (Windows)
+# Requirements
+
+ - A C 99 compliant compiler (both gcc and clang are confirmed to be suported)
+ - raylib library binaries on the "lib" folder in the project's root directory or in your compiler default libraries include location
+ - That's it!
+
+# How to Build (Windows)
 
 Download the raylib libraries fit for your system/compiler in [raylib](https://github.com/raysan5/raylib/releases) and drop it in the "lib" and "include" directory.
 
 You might need to add `-Wl,--defsym,stat64i32=_stat64` in the Makefile FLAGS variable if you are using windows. [see more about this error](https://github.com/raysan5/raylib/discussions/5971)
 
 ```console
-Make
-
-./main rom_name.ch8
+make
+./main.exe
 ```
+
+# How to Build Linux
+
+Follow the [instructions to install raylib in GNU Linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux)
+Or Download the library files binaries and include them in a "lib" directory.
+
+You can then `make` it
+
+```console
+make
+./main
+```
+
+
 Enjoy!
 
 Future Goals:
@@ -36,7 +55,7 @@ Future Goals:
 - [ ] XO-CHIP
 - [x] implement [chip-8 database](https://github.com/chip-8/chip-8-database) for automatic plataform configuration
 - [ ] Other Keyboard-layout Configs
-- [ ] Other Systems Compilation Scripts
+- [x] Other Systems Compilation Scripts
 
 # Libraries
 
