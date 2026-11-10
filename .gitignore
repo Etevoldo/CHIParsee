@@ -3,7 +3,7 @@ build/*
 
 #executable
 *.exe
-main
+chiparsee
 
 # lessons from intro-course used for reference
 lessons

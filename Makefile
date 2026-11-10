@@ -25,7 +25,7 @@ SRCS_PATH = ${shell find ${SRC_DIR} -name "*.c"}
 OBJS_PATH = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS_PATH})
 
 # build everything in the OBJS_PATH
-main: ${OBJS_PATH}
+chiparsee: ${OBJS_PATH}
 	${CC} $^ ${DEBUG} ${FLAGS} ${WARNS} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
 
 # expands into
