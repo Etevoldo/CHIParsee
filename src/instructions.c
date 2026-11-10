@@ -316,7 +316,7 @@ static void op_8000(
         break;
     case 0x000E:
         if (!quirks.is_shift) { v[x_index] = v[y_index]; }
-        int shifted_bit = (v[x_index] & B0000_0001) >> 7;
+        int shifted_bit = (v[x_index] & B1000_0000) >> 7;
 
         v[x_index] = v[x_index] << 1;
 
