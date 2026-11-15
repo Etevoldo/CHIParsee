@@ -12,7 +12,8 @@ Written with C with help of [raylib](https://github.com/raysan5/raylib) as windo
 
 # Requirements
 
- - A C 99 compliant compiler (both gcc and clang are confirmed to be suported)
+ - A C 99 compliant compiler (both gcc and clang are confirmed to be suported, altough gcc only for Windows)
+ - Make
  - raylib library binaries on the "lib" folder in the project's root directory or in your compiler default libraries include location
  - That's it!
 

@@ -12,7 +12,8 @@
 
 #define ON_COLOR CLITERAL(Color){ 243, 147, 51, 255 }
 #define OFF_COLOR CLITERAL(Color){ 51, 51, 51, 255 }
-#define RECT(x, y, xwidth, y_width) ((Rectangle) { (x), (y), (xwidth), (y_width) })
+#define RECT(x, y, xwidth, y_width) \
+    ((Rectangle) { (x), (y), (xwidth), (y_width) })
 #define INST_DEBUG_STRING_SIZE 11 // "XXXX = XXXX"
 
 #define COLUMN_WIDTH 270
