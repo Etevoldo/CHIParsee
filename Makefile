@@ -19,21 +19,28 @@ FLAGS := -O0 -std=c99 -pedantic
 WARNS := -Wall -Wextra -Wno-unused-function -Wno-unused-parameter
 
 # find all *.c in src_dir
-SRCS_PATH = ${shell find ${SRC_DIR} -name "*.c"}
+SRCS = ${shell find ${SRC_DIR} -name "*.c"}
 # prefix object files with the build directory
 # for their build location
-OBJS_PATH = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS_PATH})
+OBJS = $(patsubst ${SRC_DIR}/%.c,${BUILD_DIR}/%.o,${SRCS})
+
+DEPS := $(patsubst %.o,%.d,${OBJS})
+
+CPPFLAGS := -I${INCLUDE_PATH} -MMD -MP
 
 # build everything in the OBJS_PATH
-chiparsee: ${OBJS_PATH}
+chiparsee: ${OBJS}
 	${CC} $^ ${DEBUG} ${FLAGS} ${WARNS} -L${LIBRARY_PATH} ${LINKER_FLAGS} -o $@
 
 # expands into
 # build/<stem>.o: <stem>.c
 # for each respective object file
-${OBJS_PATH}: ${BUILD_DIR}/%.o: ${SRC_DIR}/%.c
-	${CC} $^ -c ${DEBUG} ${FLAGS} ${WARNS} -I${INCLUDE_PATH} -o $@
+${BUILD_DIR}/%.o: ${SRC_DIR}/%.c
+	${CC} $< -c ${DEBUG} ${FLAGS} ${WARNS} ${CPPFLAGS} -o $@
+
 
 .PHONY: clean
 clean:
 	rm -f ${BUILD_DIR}/*
+
+-include ${DEPS}
