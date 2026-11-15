@@ -25,7 +25,7 @@ You might need to add `-Wl,--defsym,stat64i32=_stat64` in the Makefile FLAGS var
 
 ```console
 make
-./main.exe
+./chiparsee.exe
 ```
 
 # How to Build Linux
@@ -37,8 +37,7 @@ You can then `make` it
 
 ```console
 make
-./main
-```
+./chiparsee```
 
 
 Enjoy!
