@@ -24,6 +24,7 @@ Download the raylib libraries fit for your system/compiler in [raylib](https://g
 You might need to add `-Wl,--defsym,stat64i32=_stat64` in the Makefile FLAGS variable if you are using windows. [see more about this error](https://github.com/raysan5/raylib/discussions/5971)
 
 ```console
+mkdir build
 make
 ./chiparsee.exe
 ```
@@ -36,8 +37,10 @@ Or Download the library files binaries and include them in a "lib" directory.
 You can then `make` it
 
 ```console
+mkdir build
 make
-./chiparsee```
+./chiparsee
+```
 
 
 Enjoy!
