@@ -49,16 +49,16 @@ static int map_key(int key)
         case KEY_THREE: return 0x3;
         case KEY_FOUR:  return 0xC;
         case KEY_Q:     return 0x4;
-        case KEY_W:     return 0x5; 
-        case KEY_E:     return 0x6; 
-        case KEY_R:     return 0xD; 
-        case KEY_A:     return 0x7; 
-        case KEY_S:     return 0x8; 
-        case KEY_D:     return 0x9; 
-        case KEY_F:     return 0xE; 
-        case KEY_Z:     return 0xA; 
-        case KEY_X:     return 0x0; 
-        case KEY_C:     return 0xB; 
+        case KEY_W:     return 0x5;
+        case KEY_E:     return 0x6;
+        case KEY_R:     return 0xD;
+        case KEY_A:     return 0x7;
+        case KEY_S:     return 0x8;
+        case KEY_D:     return 0x9;
+        case KEY_F:     return 0xE;
+        case KEY_Z:     return 0xA;
+        case KEY_X:     return 0x0;
+        case KEY_C:     return 0xB;
         case KEY_V:     return 0xF;
         default:        return NO_KEY;
     }
